@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#164e63">
+<title>CFBS Offline School Finance</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f1f5f9;color:#172033}
+header{background:#164e63;color:white;padding:18px}
+header h2{margin:0 0 6px;font-size:21px}
+header p{margin:0;font-size:13px}
+main{padding:14px;max-width:1000px;margin:auto}
+.card{background:white;border-radius:12px;padding:15px;margin-bottom:14px;box-shadow:0 2px 8px #0000000c}
+h3{margin:0 0 14px;color:#164e63}
+input,select,textarea,button{font:inherit}
+input,select,textarea{width:100%;padding:11px;margin:5px 0 12px;border:1px solid #cbd5e1;border-radius:7px;background:white}
+button{padding:10px 13px;border:0;border-radius:7px;background:#0e7490;color:white;cursor:pointer;margin:3px}
+button.secondary{background:#475569}
+button.danger{background:#b91c1c}
+button.green{background:#15803d}
+nav{display:flex;gap:5px;overflow-x:auto;padding:10px;background:white;position:sticky;top:0;z-index:2}
+nav button{white-space:nowrap;flex-shrink:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:10px}
+.stat{background:#ecfeff;border-radius:10px;padding:14px}
+.stat small{display:block;color:#475569;margin-bottom:8px}
+.stat strong{font-size:20px;overflow-wrap:anywhere}
+label{font-size:14px;font-weight:bold}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:9px 7px;border-bottom:1px solid #e2e8f0;text-align:left}
+th{background:#ecfeff}
+.tablewrap{overflow-x:auto}
+.hidden{display:none!important}
+.muted{color:#64748b;font-size:13px}
+#login{max-width:420px;margin:12vh auto;padding:20px}
+.notice{background:#fef3c7;padding:10px;border-radius:8px;font-size:13px}
+</style>
+</head>
+<body>
+
+<section id="login" class="card">
+<h2 style="color:#164e63">CFBS School Finance</h2>
+<p>Chindwin Future Bright School</p>
+<label>Username</label>
+<input id="username" autocomplete="username" placeholder="Username">
+<label>Password</label>
+<input id="password" type="password" autocomplete="current-password" placeholder="Password">
+<button style="width:100%" onclick="login()">Login ဝင်ရန်</button>
+<p id="loginError" style="color:#b91c1c"></p>
+<p class="muted">Offline School Finance System</p>
+</section>
+
+<div id="app" class="hidden">
+<header>
+<h2>Chindwin Future Bright School</h2>
+<p>School Finance Management — Offline</p>
+</header>
+<nav>
+<button onclick="showPage('home')">ပင်မ</button>
+<button onclick="showPage('students')">ကျောင်းသား</button>
+<button onclick="showPage('payments')">ငွေလက်ခံ</button>
+<button onclick="showPage('expenses')">အသုံးစရိတ်</button>
+<button onclick="showPage('reports')">အစီရင်ခံစာ</button>
+<button class="secondary" onclick="logout()">Logout</button>
+</nav>
+<main>
+
+<section id="home" class="page">
+<div class="grid">
+<div class="stat"><small>ကျောင်းသားစုစုပေါင်း</small><strong id="totalStudents">0</strong></div>
+<div class="stat"><small>လက်ခံရရှိငွေ</small><strong id="totalPaid">0</strong></div>
+<div class="stat"><small>အသုံးစရိတ်</small><strong id="totalSpent">0</strong></div>
+<div class="stat"><small>လက်ကျန်ငွေ</small><strong id="balance">0</strong></div>
+</div>
+<div class="card" style="margin-top:14px">
+<h3>အမြန်ကြည့်ရန်</h3>
+<p id="homeMonth"></p>
+<p class="muted">အချက်အလက်များကို ဤစက်၏ Browser Storage တွင် သိမ်းဆည်းပါသည်။</p>
+<button onclick="showPage('students')">ကျောင်းသားထည့်ရန်</button>
+<button onclick="showPage('payments')">ကျောင်းလခလက်ခံရန်</button>
+</div>
+</section>
+
+<section id="students" class="page hidden">
+<div class="card">
+<h3>ကျောင်းသားအသစ် / ပြင်ဆင်ရန်</h3>
+<input type="hidden" id="studentId">
+<label>ကျောင်းသားအမည်</label><input id="sName" placeholder="ကျောင်းသားအမည်">
+<label>မိဘအမည်</label><input id="sParent" placeholder="မိဘအမည်">
+<label>ကျောင်းဝင်အမှတ်</label><input id="sCode" placeholder="Admission No.">
+<label>ဖုန်းနံပါတ်</label><input id="sPhone" placeholder="ဖုန်းနံပါတ်">
+<label>အတန်း</label>
+<select id="sGrade">
+<option>KG</option><option>Grade 1</option><option>Grade 2</option>
+<option>Grade 3</option><option>Grade 4</option><option>Grade 5</option>
+<option>Grade 6</option><option>Grade 7</option><option>Grade 8</option>
+<option>Grade 9</option><option>Grade 10</option><option>Grade 11</option>
+<option>Grade 12</option>
+</select>
+<label>လစဉ်ကျောင်းလခ (ကျပ်)</label><input id="sFee" type="number" min="0" value="0">
+<label>အခြေအနေ</label>
+<select id="sStatus"><option value="active">တက်ရောက်နေ</option><option value="paused">ခေတ္တရပ်နား</option></select>
+<button onclick="saveStudent()">သိမ်းမည်</button>
+<button class="secondary" onclick="clearStudent()">ရှင်းမည်</button>
+</div>
+<div class="card">
+<h3>ကျောင်းသားစာရင်း</h3>
+<input id="studentSearch" placeholder="အမည်၊ အတန်း၊ ကျောင်းဝင်အမှတ် ရှာရန်" oninput="renderStudents()">
+<div class="tablewrap"><table>
+<thead><tr><th>အမည် / မိဘ</th><th>အတန်း</th><th>လစဉ်ကြေး</th><th>လုပ်ဆောင်ချက်</th></tr></thead>
+<tbody id="studentRows"></tbody>
+</table></div>
+</div>
+</section>
+
+<section id="payments" class="page hidden">
+<div class="card">
+<h3>ကျောင်းလခ လက်ခံမှတ်တမ်း</h3>
+<label>ကျောင်းသား</label><select id="pStudent"></select>
+<label>ငွေပေးသည့်လ</label><input id="pMonth" type="month">
+<label>ရက်စွဲ</label><input id="pDate" type="date">
+<label>လက်ခံငွေ (ကျပ်)</label><input id="pAmount" type="number" min="0" placeholder="ငွေပမာဏ">
+<label>ငွေပေးချေမှုနည်းလမ်း</label>
+<select id="pMethod"><option>ငွေသား</option><option>ဘဏ်</option><option>Mobile Payment</option><option>အခြား</option></select>
+<label>မှတ်ချက်</label><input id="pNote" placeholder="မှတ်ချက်">
+<button onclick="savePayment()">ငွေလက်ခံသိမ်းမည်</button>
+</div>
+<div class="card">
+<h3>ငွေလက်ခံမှတ်တမ်းများ</h3>
+<div class="tablewrap"><table>
+<thead><tr><th>ရက်စွဲ</th><th>ကျောင်းသား</th><th>လ</th><th>ငွေ</th><th></th></tr></thead>
+<tbody id="paymentRows"></tbody>
+</table></div>
+</div>
+</section>
+
+<section id="expenses" class="page hidden">
+<div class="card">
+<h3>အသုံးစရိတ်ထည့်ရန်</h3>
+<label>ရက်စွဲ</label><input id="eDate" type="date">
+<label>အမျိုးအစား</label>
+<select id="eCategory">
+<option>ဆရာ/ဝန်ထမ်းလစာ</option><option>စာရေးကိရိယာ</option>
+<option>မီး/ရေ/အင်တာနက်</option><option>ပြုပြင်ထိန်းသိမ်းရေး</option>
+<option>ကျောင်းအသုံးစရိတ်</option><option>အခြား</option>
+</select>
+<label>ငွေပမာဏ (ကျပ်)</label><input id="eAmount" type="number" min="0">
+<label>အသေးစိတ်</label><input id="eNote" placeholder="ဘာအတွက်သုံးစွဲသည်">
+<button onclick="saveExpense()">အသုံးစရိတ်သိမ်းမည်</button>
+</div>
+<div class="card">
+<h3>အသုံးစရိတ်စာရင်း</h3>
+<div class="tablewrap"><table>
+<thead><tr><th>ရက်စွဲ</th><th>အမျိုးအစား</th><th>အသေးစိတ်</th><th>ငွေ</th><th></th></tr></thead>
+<tbody id="expenseRows"></tbody>
+</table></div>
+</div>
+</section>
+
+<section id="reports" class="page hidden">
+<div class="card">
+<h3>လစဉ်အစီရင်ခံစာ</h3>
+<label>လရွေးပါ</label><input id="reportMonth" type="month" onchange="renderReport()">
+<div class="grid">
+<div class="stat"><small>လအတွင်း လက်ခံငွေ</small><strong id="rPaid">0</strong></div>
+<div class="stat"><small>လအတွင်း အသုံးစရိတ်</small><strong id="rExpense">0</strong></div>
+<div class="stat"><small>ဝင်ငွေ - အသုံးစရိတ်</small><strong id="rNet">0</strong></div>
+</div>
+<h3 style="margin-top:18px">ကျောင်းသားတစ်ဦးချင်း ကျောင်းလခ</h3>
+<div class="tablewrap"><table>
+<thead><tr><th>ကျောင်းသား</th><th>အတန်း</th><th>သတ်မှတ်ကြေး</th><th>ပေးပြီး</th><th>ကျန်ငွေ</th></tr></thead>
+<tbody id="reportRows"></tbody>
+</table></div>
+</div>
+<div class="card">
+<h3>အချက်အလက် Backup</h3>
+<p class="muted">Backup ဖိုင်ကို လုံခြုံသောနေရာတွင် သိမ်းထားပါ။</p>
+<button onclick="backup()">Backup Download</button>
+<label>Backup ပြန်သွင်းရန်</label><input id="restoreFile" type="file" accept=".json,application/json">
+<button onclick="restore()">Restore</button>
+</div>
+</section>
+
+</main>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const KEY='cfbs_offline_finance_v1';
+let db={students:[],payments:[],expenses:[]};
+try{
+ const saved=localStorage.getItem(KEY);
+ if(saved){const parsed=JSON.parse(saved);db={...db,...parsed};}
+}catch(e){}
+function persist(){localStorage.setItem(KEY,JSON.stringify(db));renderAll();}
+function money(n){return (Number(n)||0).toLocaleString('en-US')+' Ks';}
+function today(){return new Date().toISOString().slice(0,10);}
+function monthNow(){return today().slice(0,7);}
+function safe(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function login(){
+ if($('username').value.trim()==='admin' && $('password').value==='CFBS@2026!'){
+  sessionStorage.setItem('cfbs_logged_in','yes');
+  $('login').classList.add('hidden');$('app').classList.remove('hidden');renderAll();
+ }else{$('loginError').textContent='Username သို့မဟုတ် Password မှားနေပါသည်။';}
+}
+function logout(){
+ sessionStorage.removeItem('cfbs_logged_in');
+ $('app').classList.add('hidden');$('login').classList.remove('hidden');$('password').value='';
+}
+function showPage(id){
+ document.querySelectorAll('.page').forEach(p=>p.classList.add('hidden'));
+ $(id).classList.remove('hidden');renderAll();
+}
+function clearStudent(){
+ ['studentId','sName','sParent','sCode','sPhone'].forEach(id=>$(id).value='');
+ $('sGrade').value='KG';$('sFee').value='0';$('sStatus').value='active';
+}
+function saveStudent(){
+ const name=$('sName').value.trim();
+ if(!name){alert('ကျောင်းသားအမည် ထည့်ပါ။');return;}
+ const id=$('studentId').value||String(Date.now());
+ const old=db.students.find(s=>s.id===id);
+ const s={id,name,parent:$('sParent').value.trim(),code:$('sCode').value.trim(),
+ phone:$('sPhone').value.trim(),grade:$('sGrade').value,
+ fee:Math.max(0,Number($('sFee').value)||0),status:$('sStatus').value};
+ if(old)db.students=db.students.map(x=>x.id===id?s:x);
+ else db.students.push(s);
+ clearStudent();persist();showPage('students');
+}
+function editStudent(id){
+ const s=db.students.find(x=>x.id===id);if(!s)return;
+ $('studentId').value=s.id;$('sName').value=s.name;$('sParent').value=s.parent||'';
+ $('sCode').value=s.code||'';$('sPhone').value=s.phone||'';
+ $('sGrade').value=s.grade;$('sFee').value=s.fee;$('sStatus').value=s.status;
+ window.scrollTo(0,0);
+}
+function deleteStudent(id){
+ if(!confirm('ဤကျောင်းသားကို ဖျက်မလား? ငွေလက်ခံမှတ်တမ်းများ မဖျက်ပါ။'))return;
+ db.students=db.students.filter(s=>s.id!==id);persist();
+}
+function renderStudents(){
+ const q=($('studentSearch')?.value||'').toLowerCase();
+ $('studentRows').innerHTML=db.students.filter(s=>(s.name+' '+s.parent+' '+s.grade+' '+s.code).toLowerCase().includes(q)).map(s=>
+ `<tr><td><b>${safe(s.name)}</b><br><small>မိဘ: ${safe(s.parent||'-')}</small><br><small>${safe(s.code||'')}</small></td>
+ <td>${safe(s.grade)}<br><small>${s.status==='active'?'တက်ရောက်နေ':'ခေတ္တရပ်နား'}</small></td>
+ <td>${money(s.fee)}</td><td><button onclick="editStudent('${s.id}')">ပြင်</button><button class="danger" onclick="deleteStudent('${s.id}')">ဖျက်</button></td></tr>`
+ ).join('')||'<tr><td colspan="4">စာရင်းမရှိသေးပါ။</td></tr>';
+}
+function renderStudentOptions(){
+ const old=$('pStudent').value;
+ $('pStudent').innerHTML=db.students.map(s=>`<option value="${s.id}">${safe(s.name)} (${safe(s.grade)})</option>`).join('');
+ if(db.students.some(s=>s.id===old))$('pStudent').value=old;
+}
+function savePayment(){
+ const student=db.students.find(s=>s.id===$('pStudent').value);
+ const amount=Number($('pAmount').value);
+ if(!student){alert('အရင်ဆုံး ကျောင်းသားထည့်ပါ။');return;}
+ if(!amount||amount<0){alert('ငွေပမာဏ မှန်ကန်စွာထည့်ပါ။');return;}
+ db.payments.push({id:String(Date.now()),studentId:student.id,month:$('pMonth').value||monthNow(),
+ date:$('pDate').value||today(),amount,method:$('pMethod').value,note:$('pNote').value.trim()});
+ $('pAmount').value='';$('pNote').value='';persist();
+}
+function deletePayment(id){
+ if(confirm('ဤငွေလက်ခံမှတ်တမ်းကို ဖျက်မလား?')){db.payments=db.payments.filter(x=>x.id!==id);persist();}
+}
+function renderPayments(){
+ $('paymentRows').innerHTML=[...db.payments].reverse().map(p=>{
+ const s=db.students.find(x=>x.id===p.studentId);
+ return `<tr><td>${safe(p.date)}</td><td>${safe(s?.name||'ဖျက်ထားသောကျောင်းသား')}</td><td>${safe(p.month)}</td><td>${money(p.amount)}</td><td><button class="danger" onclick="deletePayment('${p.id}')">ဖျက်</button></td></tr>`;
+ }).join('')||'<tr><td colspan="5">မှတ်တမ်းမရှိသေးပါ။</td></tr>';
+}
+function saveExpense(){
+ const amount=Number($('eAmount').value);
+ if(!amount||amount<0){alert('ငွေပမာဏထည့်ပါ။');return;}
+ db.expenses.push({id:String(Date.now()),date:$('eDate').value||today(),
+ category:$('eCategory').value,amount,note:$('eNote').value.trim()});
+ $('eAmount').value='';$('eNote').value='';persist();
+}
+function deleteExpense(id){
+ if(confirm('အသုံးစရိတ်မှတ်တမ်းကို ဖျက်မလား?')){db.expenses=db.expenses.filter(x=>x.id!==id);persist();}
+}
+function renderExpenses(){
+ $('expenseRows').innerHTML=[...db.expenses].reverse().map(e=>
+ `<tr><td>${safe(e.date)}</td><td>${safe(e.category)}</td><td>${safe(e.note||'-')}</td><td>${money(e.amount)}</td><td><button class="danger" onclick="deleteExpense('${e.id}')">ဖျက်</button></td></tr>`
+ ).join('')||'<tr><td colspan="5">မှတ်တမ်းမရှိသေးပါ။</td></tr>';
+}
+function renderReport(){
+ const m=$('reportMonth').value||monthNow();
+ const paid=db.payments.filter(p=>p.month===m).reduce((a,p)=>a+p.amount,0);
+ const expense=db.expenses.filter(e=>e.date.startsWith(m)).reduce((a,e)=>a+e.amount,0);
+ $('rPaid').textContent=money(paid);$('rExpense').textContent=money(expense);$('rNet').textContent=money(paid-expense);
+ $('reportRows').innerHTML=db.students.map(s=>{
+ const should=s.status==='active'?s.fee:0;
+ const got=db.payments.filter(p=>p.studentId===s.id&&p.month===m).reduce((a,p)=>a+p.amount,0);
+ return `<tr><td>${safe(s.name)}</td><td>${safe(s.grade)}</td><td>${money(should)}</td><td>${money(got)}</td><td>${money(Math.max(0,should-got))}</td></tr>`;
+ }).join('')||'<tr><td colspan="5">ကျောင်းသားစာရင်းမရှိသေးပါ။</td></tr>';
+}
+function renderHome(){
+ $('totalStudents').textContent=db.students.length;
+ const paid=db.payments.reduce((a,p)=>a+p.amount,0);
+ const spent=db.expenses.reduce((a,e)=>a+e.amount,0);
+ $('totalPaid').textContent=money(paid);$('totalSpent').textContent=money(spent);
+ $('balance').textContent=money(paid-spent);$('homeMonth').textContent='ယခုလ: '+monthNow();
+}
+function renderAll(){
+ renderHome();renderStudents();renderStudentOptions();renderPayments();renderExpenses();renderReport();
+}
+function backup(){
+ const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});
+ const url=URL.createObjectURL(blob);const a=document.createElement('a');
+ a.href=url;a.download='CFBS-Finance-Backup.json';a.click();URL.revokeObjectURL(url);
+}
+function restore(){
+ const file=$('restoreFile').files[0];if(!file){alert('Backup JSON ဖိုင်ရွေးပါ။');return;}
+ const reader=new FileReader();
+ reader.onload=()=>{try{
+ const d=JSON.parse(reader.result);
+ if(!Array.isArray(d.students)||!Array.isArray(d.payments)||!Array.isArray(d.expenses))throw Error();
+ if(!confirm('လက်ရှိစာရင်းကို Backup ဖိုင်ဖြင့် အစားထိုးမလား?'))return;
+ db=d;persist();alert('Backup ပြန်သွင်းပြီးပါပြီ။');
+ }catch(e){alert('Backup ဖိုင်မမှန်ပါ။');}};
+ reader.readAsText(file);
+}
+$('pDate').value=today();$('pMonth').value=monthNow();
+$('eDate').value=today();$('reportMonth').value=monthNow();
+if(sessionStorage.getItem('cfbs_logged_in')==='yes'){
+ $('login').classList.add('hidden');$('app').classList.remove('hidden');renderAll();
+}
+</script>
+</body>
+</html>
+
