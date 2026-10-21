@@ -3,331 +3,786 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#164e63">
-<title>CFBS Offline School Finance</title>
+<meta name="theme-color" content="#193b63">
+<meta name="description" content="Chindwin Future Bright School management system">
+<title>Chindwin Future Bright School Management</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f1f5f9;color:#172033}
-header{background:#164e63;color:white;padding:18px}
-header h2{margin:0 0 6px;font-size:21px}
-header p{margin:0;font-size:13px}
-main{padding:14px;max-width:1000px;margin:auto}
-.card{background:white;border-radius:12px;padding:15px;margin-bottom:14px;box-shadow:0 2px 8px #0000000c}
-h3{margin:0 0 14px;color:#164e63}
-input,select,textarea,button{font:inherit}
-input,select,textarea{width:100%;padding:11px;margin:5px 0 12px;border:1px solid #cbd5e1;border-radius:7px;background:white}
-button{padding:10px 13px;border:0;border-radius:7px;background:#0e7490;color:white;cursor:pointer;margin:3px}
-button.secondary{background:#475569}
-button.danger{background:#b91c1c}
-button.green{background:#15803d}
-nav{display:flex;gap:5px;overflow-x:auto;padding:10px;background:white;position:sticky;top:0;z-index:2}
-nav button{white-space:nowrap;flex-shrink:0}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:10px}
-.stat{background:#ecfeff;border-radius:10px;padding:14px}
-.stat small{display:block;color:#475569;margin-bottom:8px}
-.stat strong{font-size:20px;overflow-wrap:anywhere}
-label{font-size:14px;font-weight:bold}
-table{border-collapse:collapse;width:100%;font-size:13px}
-th,td{padding:9px 7px;border-bottom:1px solid #e2e8f0;text-align:left}
-th{background:#ecfeff}
-.tablewrap{overflow-x:auto}
+body{margin:0;background:#f1f5f9;color:#172033;font-family:"Noto Sans Myanmar","Myanmar Text",Arial,sans-serif;font-size:14px;line-height:1.5}
+header{background:#193b63;color:#fff;padding:16px 14px;border-bottom:3px solid #216da5}
+header h1{font-size:18px;margin:0 0 4px}
+header p{margin:2px 0;font-size:12px;opacity:.9}
+main{max-width:1100px;margin:auto;padding:12px}
+.card{background:#fff;padding:14px;border-radius:12px;margin-bottom:14px;box-shadow:0 1px 4px #0000000d;border:1px solid #e2e8f0}
+h2{font-size:16px;margin:0 0 12px;color:#193b63;display:flex;align-items:center;gap:8px}
+h3{font-size:14px;margin:14px 0 8px;color:#1e293b}
+h4{font-size:13px;margin:10px 0 6px;color:#334155}
+nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-bottom:14px}
+button{border:0;padding:9px 12px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:.15s}
+.primary,nav button{background:#216da5;color:#fff}
+nav button.active{background:#193b63;outline:2px solid #9bc7f1;font-weight:bold}
+.secondary{background:#e2eaf4;color:#193b63}
+.danger{background:#b42318;color:#fff}
+label{display:block;margin:10px 0 4px;font-size:12px;font-weight:bold;color:#334155}
+input,select,textarea{width:100%;padding:9px;border:1px solid #cbd5e1;border-radius:7px;font-size:14px;background:#fff;color:#172033}
+textarea{min-height:60px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.stat-card{background:#fff;border:1px solid #e2e8f0;padding:10px;border-radius:10px;display:flex;align-items:center;gap:10px;box-shadow:0 1px 3px #00000008}
+.stat-badge{width:36px!important;height:36px!important;min-width:36px!important;min-height:36px!important;border-radius:8px;display:flex!important;align-items:center!important;justify-content:center!important;font-size:18px!important;line-height:1!important;flex-shrink:0!important;overflow:hidden!important}
+.badge-blue{background:#e0f2fe;color:#0284c7}
+.badge-indigo{background:#e0e7ff;color:#4f46e5}
+.badge-pink{background:#fce7f3;color:#db2777}
+.badge-purple{background:#f3e8ff;color:#9333ea}
+.badge-emerald{background:#d1fae5;color:#059669}
+.badge-rose{background:#ffe4e6;color:#e11d48}
+.badge-cyan{background:#cffaff;color:#0891b2}
+.badge-amber{background:#fef3c7;color:#d97706}
+.badge-orange{background:#ffedd5;color:#ea580c}
+.stat-info{overflow:hidden;flex:1}
+.stat-info span{display:block;font-size:11px;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat-info strong{display:block;font-size:15px;color:#0f172a;margin-top:2px;font-weight:700}
+.actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.actions button{flex:1;min-width:110px}
 .hidden{display:none!important}
-.muted{color:#64748b;font-size:13px}
-#login{max-width:420px;margin:12vh auto;padding:20px}
-.notice{background:#fef3c7;padding:10px;border-radius:8px;font-size:13px}
+.muted{color:#64748b;font-size:12px;line-height:1.6}
+.item{border:1px solid #dbe4ee;border-radius:8px;padding:10px;margin-top:8px;background:#f8fafc}
+.item strong{display:block;margin-bottom:4px}
+.tablewrap{overflow-x:auto;margin-top:8px;border-radius:6px;border:1px solid #e2e8f0}
+table{border-collapse:collapse;width:100%;font-size:12px;background:#fff}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid #e2e8f0;white-space:nowrap}
+th{background:#edf3fa;color:#1e293b;font-weight:bold}
+.notice{padding:10px 12px;background:#e9f7ef;color:#176445;border-radius:7px;margin-top:10px;font-size:12px;line-height:1.6;border:1px solid #a7f3d0}
+footer{text-align:center;color:#64748b;font-size:11px;padding:16px}
+.login-screen{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px;background:#193b63}
+.login-card{width:100%;max-width:380px;padding:20px;border-radius:14px;background:#fff;box-shadow:0 10px 30px #00000033}
+.login-card h2,.login-card h3,.login-card p{text-align:center}
+.login-card h2{color:#193b63;margin:0 0 4px;font-size:18px}
+.login-card h3{color:#334155;margin:0 0 12px;font-size:14px}
+.login-card p{color:#64748b;font-size:12px}
+.login-card button{width:100%;margin-top:14px;padding:11px}
+.login-error{color:#b42318!important;font-size:12px}
+body:not(.authenticated) header,body:not(.authenticated) main,body:not(.authenticated) footer{display:none}
+body.authenticated #loginScreen{display:none}
+@media(min-width:650px){
+ nav{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .two{grid-template-columns:1fr 1fr}
+}
+@media print{
+ body{background:#fff}
+ .login-screen,header,nav,form,.actions,button{display:none!important}
+ main{max-width:none;padding:0}
+ .card{box-shadow:none;break-inside:avoid;border:none}
+ .hidden{display:none!important}
+}
 </style>
 </head>
 <body>
 
-<section id="login" class="card">
-<h2 style="color:#164e63">CFBS School Finance</h2>
-<p>Chindwin Future Bright School</p>
+<div id="loginScreen" class="login-screen">
+<div class="login-card">
+<h2 id="authTitle">🔐 Admin Setup</h2>
+<h3>Chindwin Future Bright School</h3>
+<p id="authIntro">ပထမဆုံးအသုံးပြုခြင်းဖြစ်ပါသည်။ ကိုယ်ပိုင် Username နှင့် Password ဖန်တီးပါ။</p>
+<form id="setupForm">
+<label>Username အသစ်</label>
+<input id="newUsername" required minlength="3" maxlength="40" autocomplete="username" placeholder="Username">
+<label>Password အသစ်</label>
+<input id="newPassword" type="password" required minlength="6" autocomplete="new-password" placeholder="အနည်းဆုံး ၆ လုံး">
+<label>Password ထပ်မံရိုက်ပါ</label>
+<input id="confirmPassword" type="password" required minlength="6" autocomplete="new-password" placeholder="Password ထပ်ရိုက်ပါ">
+<p id="setupError" class="login-error"></p>
+<button class="primary" type="submit">Account ဖန်တီးမည်</button>
+</form>
+<form id="loginForm" class="hidden">
 <label>Username</label>
-<input id="username" autocomplete="username" placeholder="Username">
+<input id="loginUsername" required autocomplete="username" placeholder="Username ထည့်ပါ">
 <label>Password</label>
-<input id="password" type="password" autocomplete="current-password" placeholder="Password">
-<button style="width:100%" onclick="login()">Login ဝင်ရန်</button>
-<p id="loginError" style="color:#b91c1c"></p>
-<p class="muted">Offline School Finance System</p>
-</section>
+<input id="loginPassword" type="password" required autocomplete="current-password" placeholder="Password ထည့်ပါ">
+<p id="loginError" class="login-error"></p>
+<button class="primary" type="submit">Login ဝင်မည်</button>
+</form>
+<p class="muted" style="margin-top:12px">ဤအကောင့်ကို ဒီစက်၏ App ထဲတွင်သာ သိမ်းဆည်းထားမည်။ App data ကိုဖျက်လျှင် အကောင့်ကို ပြန်ဖန်တီးရနိုင်သည်။</p>
+</div>
+</div>
 
-<div id="app" class="hidden">
 <header>
-<h2>Chindwin Future Bright School</h2>
-<p>School Finance Management — Offline</p>
+<h1>Chindwin Future Bright School</h1>
+<p>ကျောင်းစီမံခန့်ခွဲမှုစနစ် • Budalin Township</p>
 </header>
-<nav>
-<button onclick="showPage('home')">ပင်မ</button>
-<button onclick="showPage('students')">ကျောင်းသား</button>
-<button onclick="showPage('payments')">ငွေလက်ခံ</button>
-<button onclick="showPage('expenses')">အသုံးစရိတ်</button>
-<button onclick="showPage('reports')">အစီရင်ခံစာ</button>
-<button class="secondary" onclick="logout()">Logout</button>
-</nav>
+
 <main>
-
-<section id="home" class="page">
+<section class="card">
+<h2><span>📊</span> Founder's Dashboard</h2>
 <div class="grid">
-<div class="stat"><small>ကျောင်းသားစုစုပေါင်း</small><strong id="totalStudents">0</strong></div>
-<div class="stat"><small>လက်ခံရရှိငွေ</small><strong id="totalPaid">0</strong></div>
-<div class="stat"><small>အသုံးစရိတ်</small><strong id="totalSpent">0</strong></div>
-<div class="stat"><small>လက်ကျန်ငွေ</small><strong id="balance">0</strong></div>
+  <div class="stat-card"><div class="stat-badge badge-blue">🎓</div><div class="stat-info"><span>တက်ရောက်နေဆဲ</span><strong id="ds">0</strong></div></div>
+  <div class="stat-card"><div class="stat-badge badge-indigo">👦</div><div class="stat-info"><span>ကျား ကျောင်းသား</span><strong id="dmale">0</strong></div></div>
+  <div class="stat-card"><div class="stat-badge badge-pink">👧</div><div class="stat-info"><span>မ ကျောင်းသူ</span><strong id="dfemale">0</strong></div></div>
+  <div class="stat-card"><div class="stat-badge badge-purple">👨‍🏫</div><div class="stat-info"><span>ဆရာ/မနှင့် ဝန်ထမ်း</span><strong id="dt">0</strong></div></div>
+  <div class="stat-card"><div class="stat-badge badge-emerald">💰</div><div class="stat-info"><span>စုစုပေါင်းဝင်ငွေ</span><strong id="di">0</strong></div></div>
+  <div class="stat-card"><div class="stat-badge badge-rose">📉</div><div class="stat-info"><span>အသုံးစရိတ်</span><strong id="de">0</strong></div></div>
+  <div class="stat-card"><div class="stat-badge badge-cyan">🏦</div><div class="stat-info"><span>ငွေလက်ကျန်</span><strong id="db">0</strong></div></div>
+  <div class="stat-card"><div class="stat-badge badge-amber">📋</div><div class="stat-info"><span>လစဉ်ကြေး သတ်မှတ်ချက်</span><strong id="df">0</strong></div></div>
+  <div class="stat-card"><div class="stat-badge badge-orange">⏳</div><div class="stat-info"><span>ကျောင်းလခရရန် (လက်ရှိလ)</span><strong id="dd">0</strong></div></div>
+  <div class="stat-card"><div class="stat-badge badge-emerald">💵</div><div class="stat-info"><span>ယခုလ ဝင်ငွေ</span><strong id="dm">0</strong></div></div>
 </div>
-<div class="card" style="margin-top:14px">
-<h3>အမြန်ကြည့်ရန်</h3>
-<p id="homeMonth"></p>
-<p class="muted">အချက်အလက်များကို ဤစက်၏ Browser Storage တွင် သိမ်းဆည်းပါသည်။</p>
-<button onclick="showPage('students')">ကျောင်းသားထည့်ရန်</button>
-<button onclick="showPage('payments')">ကျောင်းလခလက်ခံရန်</button>
-</div>
+<p class="muted" style="margin-top:10px">ဒေတာများကို ဤစက်၏ App/Browser ထဲတွင်သာ သိမ်းသည်။ App data ဖျက်လျှင် ဒေတာပျောက်နိုင်သဖြင့် Backup ပုံမှန်ယူပါ။</p>
 </section>
 
-<section id="students" class="page hidden">
-<div class="card">
-<h3>ကျောင်းသားအသစ် / ပြင်ဆင်ရန်</h3>
-<input type="hidden" id="studentId">
-<label>ကျောင်းသားအမည်</label><input id="sName" placeholder="ကျောင်းသားအမည်">
-<label>မိဘအမည်</label><input id="sParent" placeholder="မိဘအမည်">
-<label>ကျောင်းဝင်အမှတ်</label><input id="sCode" placeholder="Admission No.">
-<label>ဖုန်းနံပါတ်</label><input id="sPhone" placeholder="ဖုန်းနံပါတ်">
-<label>အတန်း</label>
-<select id="sGrade">
-<option>KG</option><option>Grade 1</option><option>Grade 2</option>
-<option>Grade 3</option><option>Grade 4</option><option>Grade 5</option>
-<option>Grade 6</option><option>Grade 7</option><option>Grade 8</option>
-<option>Grade 9</option><option>Grade 10</option><option>Grade 11</option>
-<option>Grade 12</option>
+<nav id="nav">
+<button class="active" data-p="students">👥 ကျောင်းသားစာရင်း</button>
+<button data-p="fees">💰 အတန်းအလိုက်ကျောင်းလခ</button>
+<button data-p="finance">💵 ဝင်ငွေ/အသုံးစရိတ်</button>
+<button data-p="reports">📊 လစဉ်စာရင်းချုပ်</button>
+<button data-p="calendar">📅 Academic Calendar</button>
+<button data-p="exams">📜 Exam & Grading</button>
+<button data-p="staff">👩‍🏫 Smart HR & Payroll</button>
+<button data-p="backup">💾 Backup / Restore</button>
+</nav>
+
+<section class="card page" id="students">
+<h2><span>👥</span> ကျောင်းသားစာရင်း</h2>
+<form id="sf">
+<input type="hidden" id="sid">
+<label>စာရင်းသွင်းမည့်အမျိုးအစား</label>
+<select id="enrollType">
+  <option value="student">ကျောင်းသားစာရင်း</option>
+  <option value="teacher">ဆရာ/မစာရင်း</option>
 </select>
-<label>လစဉ်ကျောင်းလခ (ကျပ်)</label><input id="sFee" type="number" min="0" value="0">
-<label>အခြေအနေ</label>
-<select id="sStatus"><option value="active">တက်ရောက်နေ</option><option value="paused">ခေတ္တရပ်နား</option></select>
-<button onclick="saveStudent()">သိမ်းမည်</button>
-<button class="secondary" onclick="clearStudent()">ရှင်းမည်</button>
+
+<div class="grid two" id="studentFieldsForm">
+<div><label>ကျောင်းသားအမည် *</label><input id="sn" required></div>
+<div><label>မိဘအမည်</label><input id="sp"></div>
+<div><label>ကျောင်းဝင်နံပါတ် *</label><input id="sc" required></div>
+<div><label>ကျား/မ</label><select id="ssex"><option value="">မရွေးရသေး</option><option value="male">ကျား</option><option value="female">မ</option></select></div>
+<div><label>ဖုန်းနံပါတ်</label><input id="sphone" type="tel"></div>
+<div><label>အတန်း</label><select id="sg"></select></div>
+<div><label>လစဉ်ကျောင်းလခ</label><input id="sfee" type="number" readonly></div>
+<div><label>အခြေအနေ</label><select id="ss"><option value="active">တက်ရောက်နေဆဲ</option><option value="paused">ရပ်နားထား</option></select></div>
 </div>
-<div class="card">
-<h3>ကျောင်းသားစာရင်း</h3>
-<input id="studentSearch" placeholder="အမည်၊ အတန်း၊ ကျောင်းဝင်အမှတ် ရှာရန်" oninput="renderStudents()">
-<div class="tablewrap"><table>
-<thead><tr><th>အမည် / မိဘ</th><th>အတန်း</th><th>လစဉ်ကြေး</th><th>လုပ်ဆောင်ချက်</th></tr></thead>
-<tbody id="studentRows"></tbody>
-</table></div>
+
+<div class="actions" id="studentFormActions">
+<button class="primary" type="submit">ကျောင်းသားထည့်မည် / သိမ်းမည်</button>
+<button type="button" class="secondary" id="studentReset">ရှင်းမည်</button>
+</div>
+
+<div id="teacherEnrollment" class="hidden">
+<h3>ဆရာ/မ အချက်အလက်</h3>
+<div class="grid two">
+<div><label>ဆရာ/မအမည် *</label><input id="teName"></div>
+<div><label>ဝန်ထမ်း ID *</label><input id="teCode"></div>
+<div><label>ရာထူး</label><select id="teRole"><option value="သင်ကြားရေး">သင်ကြားရေး</option><option value="ကျောင်းအုပ်">ကျောင်းအုပ်</option></select></div>
+<div><label>ဖုန်းနံပါတ်</label><input id="tePhone" type="tel"></div>
+<div><label>မွေးသက္ကရာဇ်</label><input id="teDob" type="date"></div>
+<div><label>ပညာအရည်အချင်း</label><input id="teEducation"></div>
+<div><label>အတန်းပိုင်</label><select id="teClass"><option value="">မသတ်မှတ်ရသေး</option></select></div>
+</div>
+<button type="button" class="primary" id="saveTeacherEnrollment" style="margin-top:10px">ဆရာ/မစာရင်း သိမ်းမည်</button>
+</div>
+</form>
+
+<div id="studentListArea" style="margin-top:14px">
+<label>ကျောင်းသားရှာရန်</label>
+<input id="sq" placeholder="အမည် သို့မဟုတ် ကျောင်းဝင်နံပါတ်">
+<div id="sl"></div>
+<div id="classStudentTables"><h3>အတန်းအလိုက် ကျောင်းသားအချက်အလက်</h3></div>
+</div>
+
+<div id="teacherListArea" class="hidden" style="margin-top:14px">
+<h3>👩‍🏫 ဆရာ/မစာရင်း</h3>
+<div id="teacherEnrollmentList"></div>
 </div>
 </section>
 
-<section id="payments" class="page hidden">
-<div class="card">
-<h3>ကျောင်းလခ လက်ခံမှတ်တမ်း</h3>
-<label>ကျောင်းသား</label><select id="pStudent"></select>
-<label>ငွေပေးသည့်လ</label><input id="pMonth" type="month">
-<label>ရက်စွဲ</label><input id="pDate" type="date">
-<label>လက်ခံငွေ (ကျပ်)</label><input id="pAmount" type="number" min="0" placeholder="ငွေပမာဏ">
+<section class="card page hidden" id="fees">
+<h2><span>💰</span> အတန်းအလိုက် လစဉ်ကျောင်းလခ</h2>
+<p class="muted">အတန်းကြေးပြောင်းလဲပါက သက်ဆိုင်ရာအတန်းရှိ ကျောင်းသားများ၏ လစဉ်ကြေးပြောင်းမည်။ ယခင်ငွေပေးသွင်းမှုမှတ်တမ်းများ မပြောင်းပါ။</p>
+<form id="ff">
+<label>အတန်း</label><select id="fg"></select>
+<label>လစဉ်ကျောင်းလခ (ကျပ်)</label><input id="fa" type="number" min="0" required placeholder="5000">
+<button class="primary" style="width:100%;margin-top:12px">ကျောင်းလခ သိမ်းမည်</button>
+</form>
+<div id="fl" style="margin-top:12px"></div>
+</section>
+
+<section class="card page hidden" id="finance">
+<h2><span>💵</span> ငွေပေးသွင်းမှု / အသုံးစရိတ်</h2>
+<form id="tf">
+<input type="hidden" id="tid">
+<label>မှတ်တမ်းအမျိုးအစား</label>
+<select id="tt">
+<option value="income">ဝင်ငွေ / ကျောင်းလခ</option>
+<option value="expense">အသုံးစရိတ်</option>
+</select>
+
+<div id="studentFields">
+<label>အတန်းကို အရင်ရွေးပါ</label>
+<select id="txGrade"></select>
+<label>ကျောင်းသား</label>
+<select id="ts"></select>
+<label>အတန်း / ကျောင်းဝင်နံပါတ်</label>
+<input id="tinfo" readonly>
+<label>ကျောင်းလခသက်ဆိုင်သည့်လ</label>
+<input id="tmonth" type="month">
+</div>
+
+<div id="expenseFields" class="hidden">
+<label>အသုံးစရိတ်အမျိုးအစား</label>
+<select id="tcat">
+<option>ဆရာ/ဝန်ထမ်းလစာ</option>
+<option>မီး/ရေ/အင်တာနက်</option>
+<option>စာရေးကိရိယာ</option>
+<option>ပြုပြင်ထိန်းသိမ်းမှု</option>
+<option>အဆောက်အအုံ/ငှားရမ်းခ</option>
+<option>သင်ထောက်ကူပစ္စည်း</option>
+<option>သယ်ယူပို့ဆောင်ရေး</option>
+<option>အခြား</option>
+</select>
+</div>
+
+<label>ငွေပမာဏ (ကျပ်) *</label>
+<input id="ta" type="number" min="1" required>
+<label>ရက်စွဲ</label>
+<input id="td" type="date" required>
 <label>ငွေပေးချေမှုနည်းလမ်း</label>
-<select id="pMethod"><option>ငွေသား</option><option>ဘဏ်</option><option>Mobile Payment</option><option>အခြား</option></select>
-<label>မှတ်ချက်</label><input id="pNote" placeholder="မှတ်ချက်">
-<button onclick="savePayment()">ငွေလက်ခံသိမ်းမည်</button>
-</div>
-<div class="card">
-<h3>ငွေလက်ခံမှတ်တမ်းများ</h3>
-<div class="tablewrap"><table>
-<thead><tr><th>ရက်စွဲ</th><th>ကျောင်းသား</th><th>လ</th><th>ငွေ</th><th></th></tr></thead>
-<tbody id="paymentRows"></tbody>
-</table></div>
-</div>
-</section>
-
-<section id="expenses" class="page hidden">
-<div class="card">
-<h3>အသုံးစရိတ်ထည့်ရန်</h3>
-<label>ရက်စွဲ</label><input id="eDate" type="date">
-<label>အမျိုးအစား</label>
-<select id="eCategory">
-<option>ဆရာ/ဝန်ထမ်းလစာ</option><option>စာရေးကိရိယာ</option>
-<option>မီး/ရေ/အင်တာနက်</option><option>ပြုပြင်ထိန်းသိမ်းရေး</option>
-<option>ကျောင်းအသုံးစရိတ်</option><option>အခြား</option>
+<select id="tm">
+<option>ငွေသား</option>
+<option>ဘဏ်</option>
+<option>မိုဘိုင်းပေးချေမှု</option>
+<option>အခြား</option>
 </select>
-<label>ငွေပမာဏ (ကျပ်)</label><input id="eAmount" type="number" min="0">
-<label>အသေးစိတ်</label><input id="eNote" placeholder="ဘာအတွက်သုံးစွဲသည်">
-<button onclick="saveExpense()">အသုံးစရိတ်သိမ်းမည်</button>
+<label>မှတ်ချက်</label>
+<textarea id="tn" placeholder="ဥပမာ - အောက်တိုဘာလကျောင်းလခ / ဆရာလစာ"></textarea>
+
+<div class="actions">
+<button class="primary" type="submit">စာရင်းသိမ်းမည်</button>
+<button type="button" class="secondary" id="txReset">ရှင်းမည်</button>
 </div>
-<div class="card">
-<h3>အသုံးစရိတ်စာရင်း</h3>
-<div class="tablewrap"><table>
-<thead><tr><th>ရက်စွဲ</th><th>အမျိုးအစား</th><th>အသေးစိတ်</th><th>ငွေ</th><th></th></tr></thead>
-<tbody id="expenseRows"></tbody>
-</table></div>
-</div>
+</form>
+
+<h3 style="margin-top:16px">ငွေစာရင်းမှတ်တမ်းများ</h3>
+<div id="tl" style="display:none"></div>
+<div id="transactionTables"></div>
 </section>
 
-<section id="reports" class="page hidden">
-<div class="card">
-<h3>လစဉ်အစီရင်ခံစာ</h3>
-<label>လရွေးပါ</label><input id="reportMonth" type="month" onchange="renderReport()">
-<div class="grid">
-<div class="stat"><small>လအတွင်း လက်ခံငွေ</small><strong id="rPaid">0</strong></div>
-<div class="stat"><small>လအတွင်း အသုံးစရိတ်</small><strong id="rExpense">0</strong></div>
-<div class="stat"><small>ဝင်ငွေ - အသုံးစရိတ်</small><strong id="rNet">0</strong></div>
+<section class="card page hidden" id="reports">
+<h2><span>📊</span> လစဉ်စာရင်းချုပ်</h2>
+<label>ကြည့်ရှုလိုသည့်လ</label>
+<input type="month" id="rm">
+<button class="primary" id="reportBtn" style="width:100%;margin-top:10px">စာရင်းကြည့်မည်</button>
+<div id="rr" style="margin-top:10px"></div>
+<div id="yearSummary"></div>
+<hr style="margin:20px 0;border:0;border-top:1px solid #dbe4ee">
+<h2><span>📋</span> လစဉ် ကျောင်းလခအကြွေးကျန်စာရင်း</h2>
+<label>အကြွေးကျန်စစ်ဆေးမည့်လ</label>
+<input type="month" id="arrearsMonth">
+<div class="actions">
+<button class="primary" id="arrearsBtn">အကြွေးကျန်ကြည့်မည်</button>
+<button class="secondary" id="printArrearsBtn">Print ထုတ်မည်</button>
 </div>
-<h3 style="margin-top:18px">ကျောင်းသားတစ်ဦးချင်း ကျောင်းလခ</h3>
-<div class="tablewrap"><table>
-<thead><tr><th>ကျောင်းသား</th><th>အတန်း</th><th>သတ်မှတ်ကြေး</th><th>ပေးပြီး</th><th>ကျန်ငွေ</th></tr></thead>
-<tbody id="reportRows"></tbody>
-</table></div>
-</div>
-<div class="card">
-<h3>အချက်အလက် Backup</h3>
-<p class="muted">Backup ဖိုင်ကို လုံခြုံသောနေရာတွင် သိမ်းထားပါ။</p>
-<button onclick="backup()">Backup Download</button>
-<label>Backup ပြန်သွင်းရန်</label><input id="restoreFile" type="file" accept=".json,application/json">
-<button onclick="restore()">Restore</button>
-</div>
+<div id="arrearsReport" style="margin-top:10px"></div>
 </section>
 
+<section class="card page hidden" id="calendar">
+<h2><span>📅</span> Academic Calendar & Schedules</h2>
+<form id="cf">
+<input type="hidden" id="cid">
+<label>အစီအစဉ်အမည် *</label>
+<input id="ct" required placeholder="စာမေးပွဲ / ကျောင်းပိတ်ရက်">
+<div class="grid two">
+<div><label>ရက်စွဲ *</label><input id="cd" type="date" required></div>
+<div><label>အမျိုးအစား</label><select id="ck"><option>သင်ကြားရေးအချိန်ဇယား</option><option>ကျောင်းပိတ်ရက်</option><option>စာမေးပွဲ</option><option>အခမ်းအနား</option><option>အခြား</option></select></div>
+</div>
+<label>အသေးစိတ်</label>
+<textarea id="cn"></textarea>
+<button class="primary" style="width:100%;margin-top:12px">အစီအစဉ်သိမ်းမည်</button>
+</form>
+<div id="cl" style="margin-top:12px"></div>
+</section>
+
+<section class="card page hidden" id="exams">
+<h2><span>📜</span> Exam & Grading System</h2>
+<form id="ef">
+<input type="hidden" id="eid">
+<label>အတန်းကို အရင်ရွေးပါ</label>
+<select id="examGrade"></select>
+<label>အတန်းထဲမှ ကျောင်းသားရွေးပါ</label>
+<select id="es" required></select>
+
+<div class="grid two">
+<div><label>စာမေးပွဲအမည်</label><input id="en" required placeholder="Midterm"></div>
+<div><label>ဘာသာရပ်</label><select id="eb" required></select></div>
+<div><label>ရရှိမှတ်</label><input id="em" type="number" min="0" required></div>
+<div>
+  <label>အမှတ်ပြည့်</label>
+  <input id="emax" type="hidden" value="100">
+  <select id="examMax"><option value="25">25 မှတ်</option><option value="50">50 မှတ်</option><option value="100" selected>100 မှတ်</option></select>
+</div>
+</div>
+<button class="primary" style="width:100%;margin-top:12px">အမှတ်သိမ်းမည်</button>
+</form>
+<label style="margin-top:12px">အောင်မှတ် ရာခိုင်နှုန်း (%)</label>
+<input id="pass" type="number" min="0" max="100" value="40">
+<div id="examClassTable" style="margin-top:14px"></div>
+<div id="el" style="display:none"></div>
+</section>
+
+<section class="card page hidden" id="staff">
+<h2><span>👩‍🏫</span> Smart HR & Payroll</h2>
+<div id="payrollPanel"></div>
+</section>
+
+<section class="card page hidden" id="backup">
+<h2><span>💾</span> Backup / Restore</h2>
+<p class="muted">ဒေတာများကို JSON ဖိုင်အဖြစ် သိမ်းဆည်းပြီး ပြန်ထည့်နိုင်သည်။ Backup ကို ပုံမှန်ယူထားပါ။</p>
+<div class="actions">
+<button class="primary" id="backupBtn">Backup ထုတ်မည်</button>
+<button class="secondary" id="restoreBtn">Backup ပြန်ထည့်မည်</button>
+</div>
+<input type="file" id="rf" accept=".json,application/json" class="hidden">
+</section>
 </main>
-</div>
+
+<footer>Chindwin Future Bright School Management • Offline-first system</footer>
 
 <script>
-const $=id=>document.getElementById(id);
-const KEY='cfbs_offline_finance_v1';
-let db={students:[],payments:[],expenses:[]};
+"use strict";
+const $=id=>document.getElementById(id), grades=["KG",...Array.from({length:12},(_,i)=>"Grade-"+(i+1))],KEY="cfbs_school_manager_v3";
+const dateNow=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")},monthNow=()=>dateNow().slice(0,7),cash=n=>Number(n||0).toLocaleString("en-US")+" ကျပ်",esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])),uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+
+let db={students:[],fees:{},transactions:[],events:[],exams:[],staff:[],payroll:[]};
 try{
- const saved=localStorage.getItem(KEY);
- if(saved){const parsed=JSON.parse(saved);db={...db,...parsed};}
-}catch(e){}
-function persist(){localStorage.setItem(KEY,JSON.stringify(db));renderAll();}
-function money(n){return (Number(n)||0).toLocaleString('en-US')+' Ks';}
-function today(){return new Date().toISOString().slice(0,10);}
-function monthNow(){return today().slice(0,7);}
-function safe(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function login(){
- if($('username').value.trim()==='admin' && $('password').value==='CFBS@2026!'){
-  sessionStorage.setItem('cfbs_logged_in','yes');
-  $('login').classList.add('hidden');$('app').classList.remove('hidden');renderAll();
- }else{$('loginError').textContent='Username သို့မဟုတ် Password မှားနေပါသည်။';}
+  const saved=JSON.parse(localStorage.getItem(KEY)||"null");
+  if(saved && typeof saved==="object" && !Array.isArray(saved)) db={...db,...saved};
+}catch(e){alert("သိမ်းထားသောဒေတာကို ဖတ်မရပါ။ Backup ဖိုင်ရှိပါက ပြန်ထည့်ပါ။")}
+
+["students","transactions","events","exams","staff","payroll"].forEach(k=>{if(!Array.isArray(db[k]))db[k]=[]});
+if(!db.fees || typeof db.fees!=="object" || Array.isArray(db.fees)) db.fees={};
+grades.forEach(g=>{if(db.fees[g]===undefined)db.fees[g]=0});
+
+$("td").value=dateNow();$("rm").value=monthNow();$("tmonth").value=monthNow();$("arrearsMonth").value=monthNow();
+
+function save(){try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){alert("Storage ပြည့်နေသည်။ Backup ယူပါ။");throw e}}
+function student(id){return db.students.find(s=>s.id===id)}
+function fillGrades(id){$(id).innerHTML=grades.map(g=>`<option>${g}</option>`).join("")}
+fillGrades("sg");fillGrades("fg");fillGrades("txGrade");fillGrades("examGrade");fillGrades("teClass");
+
+function fillStudents(){
+  const g=$("txGrade").value;
+  const arr=db.students.filter(s=>s.grade===g);
+  $("ts").innerHTML='<option value="">ကျောင်းသားရွေးပါ</option>'+arr.map(s=>`<option value="${s.id}">${esc(s.name)} (${esc(s.code)})</option>`).join("");
 }
-function logout(){
- sessionStorage.removeItem('cfbs_logged_in');
- $('app').classList.add('hidden');$('login').classList.remove('hidden');$('password').value='';
+
+function render(){
+  fillStudents();dashboard();studentsList();feeList();txList();calendarList();examList();
+  if(typeof window.staffList==='function') window.staffList();
+  if($("arrearsMonth"))renderArrearsReport();
 }
-function showPage(id){
- document.querySelectorAll('.page').forEach(p=>p.classList.add('hidden'));
- $(id).classList.remove('hidden');renderAll();
+
+function dashboard(){
+  let inc=db.transactions.filter(t=>t.type==="income").reduce((a,t)=>a+t.amount,0),
+      exp=db.transactions.filter(t=>t.type==="expense").reduce((a,t)=>a+t.amount,0),
+      expected=db.students.filter(s=>s.status==="active").reduce((a,s)=>a+Number(s.fee||0),0),
+      paid=db.transactions.filter(t=>t.type==="income"&&t.date?.startsWith(monthNow())).reduce((a,t)=>a+t.amount,0);
+  $("ds").textContent=db.students.filter(s=>s.status==="active").length;
+  $("dmale").textContent=db.students.filter(s=>s.status==="active"&&s.sex==="male").length;
+  $("dfemale").textContent=db.students.filter(s=>s.status==="active"&&s.sex==="female").length;
+  $("dt").textContent=db.staff.length;
+  $("di").textContent=cash(inc);
+  $("de").textContent=cash(exp);
+  $("db").textContent=cash(inc-exp);
+  $("df").textContent=cash(expected);
+  $("dd").textContent=cash(Math.max(0,expected-paid));
+  $("dm").textContent=cash(paid);
 }
-function clearStudent(){
- ['studentId','sName','sParent','sCode','sPhone'].forEach(id=>$(id).value='');
- $('sGrade').value='KG';$('sFee').value='0';$('sStatus').value='active';
+
+$("sg").onchange=()=>$("sfee").value=db.fees[$("sg").value]||0;
+function resetStudent(){$("sf").reset();$("sid").value="";$("sfee").value=db.fees[$("sg").value]||0}
+$("studentReset").onclick=resetStudent;
+
+$("sf").onsubmit=e=>{
+  if($("enrollType").value==="teacher") return;
+  e.preventDefault();
+  let id=$("sid").value,code=$("sc").value.trim();
+  if(db.students.some(s=>s.code.toLowerCase()===code.toLowerCase()&&s.id!==id)){alert("ကျောင်းဝင်နံပါတ် ထပ်နေပါသည်။");return}
+  let s={id:id||uid(),name:$("sn").value.trim(),parent:$("sp").value.trim(),code,phone:$("sphone").value.trim(),sex:$("ssex").value\vert{}\vert{}"",grade:$("sg").value,fee:Number(db.fees[$("sg").value]\vert{}\vert{}0),status:$("ss").value};
+  if(id)db.students=db.students.map(x=>x.id===id?s:x);else db.students.push(s);
+  save();resetStudent();render();alert("ကျောင်းသားစာရင်း သိမ်းပြီးပါပြီ။");
+};
+
+function studentsList(){
+  let q=$("sq").value.toLowerCase();
+  let out="";
+  grades.forEach(g=>{
+    const arr=db.students.filter(s=>s.grade===g&&(s.name+' '+s.code+' '+s.parent+' '+s.phone).toLowerCase().includes(q)).sort((a,b)=>String(a.name).localeCompare(String(b.name)));
+    if(!arr.length)return;
+    out+=`<h3>${esc(g)} (${arr.length} ဦး)</h3><div class="tablewrap"><table><thead><tr><th>စဉ်</th><th>အမည်</th><th>ကျောင်းဝင်နံပါတ်</th><th>မိဘအမည်</th><th>ကျား/မ</th><th>ဖုန်းနံပါတ်</th><th>လစဉ်ကျောင်းလခ</th><th>အခြေအနေ</th><th>လုပ်ဆောင်ချက်</th></tr></thead><tbody>`;
+    arr.forEach((s,i)=>{
+      out+=`<tr><td>${i+1}</td><td>${esc(s.name)}</td><td>${esc(s.code)}</td><td>${esc(s.parent)}</td><td>${s.sex==='male'?'ကျား':s.sex==='female'?'မ':'—'}</td><td>${esc(s.phone)}</td><td>${cash(s.fee)}</td><td>${s.status==='active'?'တက်ရောက်နေဆဲ':'ရပ်နားထား'}</td><td><button class="secondary" onclick="editStudent('${s.id}')">ပြင်မည်</button> <button class="danger" onclick="deleteStudent('${s.id}')">ဖျက်မည်</button></td></tr>`;
+    });
+    out+='</tbody></table></div>';
+  });
+  $("classStudentTables").innerHTML='<h3>အတန်းအလိုက် ကျောင်းသားအချက်အလက်</h3>'+(out||'<p class="muted">ရှာဖွေမှုနှင့် ကိုက်ညီသော ကျောင်းသားမရှိပါ။</p>');
 }
-function saveStudent(){
- const name=$('sName').value.trim();
- if(!name){alert('ကျောင်းသားအမည် ထည့်ပါ။');return;}
- const id=$('studentId').value||String(Date.now());
- const old=db.students.find(s=>s.id===id);
- const s={id,name,parent:$('sParent').value.trim(),code:$('sCode').value.trim(),
- phone:$('sPhone').value.trim(),grade:$('sGrade').value,
- fee:Math.max(0,Number($('sFee').value)||0),status:$('sStatus').value};
- if(old)db.students=db.students.map(x=>x.id===id?s:x);
- else db.students.push(s);
- clearStudent();persist();showPage('students');
+$("sq").oninput=studentsList;
+
+window.editStudent=id=>{
+  let s=student(id);if(!s)return;
+  $("sid").value=s.id;$("sn").value=s.name;$("sp").value=s.parent;$("sc").value=s.code;$("sphone").value=s.phone;$("ssex").value=s.sex||"";$("sg").value=s.grade;$("sfee").value=s.fee;$("ss").value=s.status;
+  showPage("students");scrollTo(0,0);
+};
+
+window.deleteStudent=id=>{
+  if(confirm("ကျောင်းသားကို ဖျက်မလား? ငွေစာရင်းမှတ်တမ်းကို သီးခြားထိန်းသိမ်းထားမည်။")){
+    db.students=db.students.filter(s=>s.id!==id);save();render();
+  }
+};
+
+$("fg").onchange=()=>$("fa").value=db.fees[$("fg").value]||0;
+$("ff").onsubmit=e=>{
+  e.preventDefault();let g=$("fg").value,n=Number($("fa").value);
+  if(n<0)return;if(!confirm(g+" လစဉ်ကြေးကို "+cash(n)+" သို့ ပြောင်းမလား?"))return;
+  db.fees[g]=n;db.students=db.students.map(s=>s.grade===g?{...s,fee:n}:s);
+  save();render();alert("အတန်းကြေး ပြောင်းပြီးပါပြီ။");
+};
+
+function feeList(){
+  $("fl").innerHTML=grades.map(g=>`<div class="item" style="display:flex;justify-content:space-between;align-items:center"><strong>${g} — ${cash(db.fees[g])}</strong><button class="secondary" onclick="selectFee('${g}')">ကြေးပြင်မည်</button></div>`).join("");
 }
-function editStudent(id){
- const s=db.students.find(x=>x.id===id);if(!s)return;
- $('studentId').value=s.id;$('sName').value=s.name;$('sParent').value=s.parent||'';
- $('sCode').value=s.code||'';$('sPhone').value=s.phone||'';
- $('sGrade').value=s.grade;$('sFee').value=s.fee;$('sStatus').value=s.status;
- window.scrollTo(0,0);
+window.selectFee=g=>{$("fg").value=g;$("fa").value=db.fees[g]||0;scrollTo(0,0)};
+
+$("txGrade").onchange=fillStudents;
+$("ts").onchange=()=>{let s=student($("ts").value);$("tinfo").value=s?s.grade+" / "+s.code:""};
+
+function updateTxFields(){
+  $("studentFields").classList.toggle("hidden",$("tt").value!=="income");
+  $("expenseFields").classList.toggle("hidden",$("tt").value!=="expense");
 }
-function deleteStudent(id){
- if(!confirm('ဤကျောင်းသားကို ဖျက်မလား? ငွေလက်ခံမှတ်တမ်းများ မဖျက်ပါ။'))return;
- db.students=db.students.filter(s=>s.id!==id);persist();
+$("tt").onchange=updateTxFields;
+
+function resetTx(){
+  $("tf").reset();$("tid").value="";$("td").value=dateNow();$("tmonth").value=monthNow();
+  $("studentFields").classList.remove("hidden");$("tinfo").value="";
 }
-function renderStudents(){
- const q=($('studentSearch')?.value||'').toLowerCase();
- $('studentRows').innerHTML=db.students.filter(s=>(s.name+' '+s.parent+' '+s.grade+' '+s.code).toLowerCase().includes(q)).map(s=>
- `<tr><td><b>${safe(s.name)}</b><br><small>မိဘ: ${safe(s.parent||'-')}</small><br><small>${safe(s.code||'')}</small></td>
- <td>${safe(s.grade)}<br><small>${s.status==='active'?'တက်ရောက်နေ':'ခေတ္တရပ်နား'}</small></td>
- <td>${money(s.fee)}</td><td><button onclick="editStudent('${s.id}')">ပြင်</button><button class="danger" onclick="deleteStudent('${s.id}')">ဖျက်</button></td></tr>`
- ).join('')||'<tr><td colspan="4">စာရင်းမရှိသေးပါ။</td></tr>';
+$("txReset").onclick=resetTx;
+
+$("tf").onsubmit=e=>{
+  e.preventDefault();let id=$("tid").value,type=$("tt").value,amount=Number($("ta").value);
+  if(amount<=0)return;
+  if(type==="income"&&!$("ts").value){alert("ဝင်ငွေမှတ်တမ်းအတွက် ကျောင်းသားရွေးပါ။");return}
+  if(type==="income"&&!$("tmonth").value){alert("ကျောင်းလခသက်ဆိုင်သည့်လကို ရွေးပါ။");return}
+  let t={id:id||uid(),type,studentId:type==="income"?$("ts").value:"",amount,date:$("td").value,method:$("tm").value,category:type==="expense"?$("tcat").value:"ကျောင်းလခ",billingMonth:type==="income"?$("tmonth").value:"",note:$("tn").value.trim()};
+  if(!t.date)return;
+  if(id)db.transactions=db.transactions.map(x=>x.id===id?t:x);else db.transactions.push(t);
+  save();resetTx();render();alert("ငွေစာရင်း သိမ်းပြီးပါပြီ။");
+};
+function txList(){
+  let income=db.transactions.filter(t=>t.type==='income').sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+  let h='<h3>အတန်းအလိုက် ပေးသွင်းသူစာရင်း</h3>';
+  grades.forEach(g=>{
+    let arr=income.filter(t=>student(t.studentId)?.grade===g);
+    if(!arr.length)return;
+    h+=`<h4>${g}</h4><div class="tablewrap"><table><thead><tr><th>စဉ်</th><th>ရက်စွဲ</th><th>အမည်</th><th>ကျောင်းဝင်နံပါတ်</th><th>သက်ဆိုင်သည့်လ</th><th>ပေးသွင်းငွေ</th></tr></thead><tbody>`;
+    arr.forEach((t,i)=>{
+      let s=student(t.studentId);
+      h+=`<tr><td>${i+1}</td><td>${esc(t.date)}</td><td>${esc(s?.name)}</td><td>${esc(s?.code)}</td><td>${esc(t.billingMonth||'')}</td><td>${cash(t.amount)}</td></tr>`;
+    });
+    h+=`<tr><th colspan="5">${g} ပေးသွင်းငွေ စုစုပေါင်း</th><th>${cash(arr.reduce((n,t)=>n+Number(t.amount||0),0))}</th></tr></tbody></table></div>`;
+    h+=`<label style="margin-top:6px">${g} မှတ်တမ်းရွေးပြီး ပြင်ဆင်/ဖျက်ရန်</label><select id="incomeAction-${g}"><option value="">မှတ်တမ်းရွေးပါ</option>${arr.map(t=>`<option value="${t.id}">${esc(student(t.studentId)?.name)} · ${t.billingMonth||t.date} · ${cash(t.amount)}</option>`).join('')}</select><div class="actions"><button class="secondary" onclick="editTx(document.getElementById('incomeAction-${g}').value)">ပြင်ဆင်မည်</button><button class="danger" onclick="deleteTx(document.getElementById('incomeAction-${g}').value)">ဖျက်မည်</button></div>`;
+  });
+
+  const expenses=db.transactions.filter(t=>t.type==='expense').sort((a,b)=>String(b.date).localeCompare(a.date));
+  h+='<h3 style="margin-top:16px">အသုံးစရိတ်စာရင်း</h3><div class="tablewrap"><table><thead><tr><th>စဉ်</th><th>ရက်စွဲ</th><th>အမျိုးအစား</th><th>မှတ်ချက်</th><th>ငွေပမာဏ</th></tr></thead><tbody>';
+  expenses.forEach((t,i)=>{
+    h+=`<tr><td>${i+1}</td><td>${esc(t.date)}</td><td>${esc(t.category)}</td><td>${esc(t.note)}</td><td>${cash(t.amount)}</td></tr>`;
+  });
+  h+=`<tr><th colspan="4">အသုံးစရိတ် စုစုပေါင်း</th><th>${cash(expenses.reduce((n,t)=>n+Number(t.amount||0),0))}</th></tr></tbody></table></div>`;
+  h+=`<label style="margin-top:6px">ပြင်ဆင်/ဖျက်မည့် အသုံးစရိတ်ကို ရွေးပါ</label><select id="expenseAction"><option value="">မှတ်တမ်းရွေးပါ</option>${expenses.map(t=>`<option value="${t.id}">${t.date} · ${esc(t.category)} · ${cash(t.amount)}</option>`).join('')}</select><div class="actions"><button class="secondary" onclick="editTx(document.getElementById('expenseAction').value)">ပြင်ဆင်မည်</button><button class="danger" onclick="deleteTx(document.getElementById('expenseAction').value)">ဖျက်မည်</button></div>`;
+  
+  $("transactionTables").innerHTML=h;
 }
-function renderStudentOptions(){
- const old=$('pStudent').value;
- $('pStudent').innerHTML=db.students.map(s=>`<option value="${s.id}">${safe(s.name)} (${safe(s.grade)})</option>`).join('');
- if(db.students.some(s=>s.id===old))$('pStudent').value=old;
+
+window.editTx=id=>{
+  if(!id)return;
+  let t=db.transactions.find(x=>x.id===id);if(!t)return;
+  $("tid").value=t.id;$("tt").value=t.type;updateTxFields();
+  $("tcat").value=t.category||"အခြား";
+  let s=student(t.studentId);
+  if(s){$("txGrade").value=s.grade;fillStudents();$("ts").value=s.id;$("ts").onchange();}
+  $("ta").value=t.amount;$("td").value=t.date;$("tm").value=t.method;$("tn").value=t.note;$("tmonth").value=t.billingMonth||t.date?.slice(0,7)||monthNow();
+  showPage("finance");scrollTo(0,0);
+};
+
+window.deleteTx=id=>{
+  if(!id)return;
+  if(confirm("ဤငွေစာရင်းကို ဖျက်မလား?")){
+    db.transactions=db.transactions.filter(t=>t.id!==id);save();render();
+  }
+};
+
+function report(){
+  let m=$("rm").value;if(!m)return;
+  let ts=db.transactions.filter(t=>t.date?.startsWith(m)),sum=type=>ts.filter(t=>t.type===type).reduce((a,t)=>a+t.amount,0);
+  let html=`<div class="notice"><strong>${esc(m)} စာရင်းချုပ်</strong><br>ဝင်ငွေ: ${cash(sum("income"))}<br>အသုံးစရိတ်: ${cash(sum("expense"))}<br>အမြတ် / အရှုံး: ${cash(sum("income")-sum("expense"))}</div><h3>အတန်းအလိုက် ကျောင်းလခ</h3><div class="tablewrap"><table><tr><th>အတန်း</th><th>ကျောင်းသား</th><th>ပေးပြီး</th><th>ကျန်</th><th>ရငွေ</th><th>မျှော်မှန်းကြေး</th></tr>`;
+  grades.forEach(g=>{
+    let ss=db.students.filter(s=>s.grade===g&&s.status==="active"),paidCount=0,received=0,expected=0;
+    ss.forEach(s=>{
+      let due=Number(s.fee||0);expected+=due;
+      let got=ts.filter(t=>t.type==="income"&&t.studentId===s.id).reduce((a,t)=>a+t.amount,0);
+      received+=got;if(due>0&&got>=due)paidCount++;
+    });
+    html+=`<tr><td>${g}</td><td>${ss.length}</td><td>${paidCount}</td><td>${ss.length-paidCount}</td><td>${cash(received)}</td><td>${cash(expected)}</td></tr>`;
+  });
+  let cats={};ts.filter(t=>t.type==="expense").forEach(t=>{let c=t.category||"အခြား";cats[c]=(cats[c]||0)+t.amount});
+  html+="</table></div><h3>အသုံးစရိတ် အမျိုးအစားအလိုက်</h3><div class='tablewrap'><table><tr><th>အမျိုးအစား</th><th>စုစုပေါင်း</th></tr>";
+  Object.keys(cats).forEach(c=>html+=`<tr><td>${esc(c)}</td><td>${cash(cats[c])}</td></tr>`);
+  html+="</table></div>";
+  $("rr").innerHTML=html;
+
+  const y=m.slice(0,4);
+  let yh=`<h3>${y} ခုနှစ် တစ်နှစ်စာ အချုပ်</h3><div class="tablewrap"><table><thead><tr><th>လ</th><th>ဝင်ငွေ</th><th>အသုံးစရိတ်</th><th>လိုငွေ/ကျန်ငွေ</th></tr></thead><tbody>`;
+  let bal=0;
+  for(let i=1;i<=12;i++){
+    let monthStr=y+'-'+String(i).padStart(2,'0'),
+        arr=db.transactions.filter(t=>(t.date||'').startsWith(monthStr)),
+        inc=arr.filter(t=>t.type==='income').reduce((n,t)=>n+Number(t.amount||0),0),
+        exp=arr.filter(t=>t.type==='expense').reduce((n,t)=>n+Number(t.amount||0),0),
+        net=inc-exp;
+    bal+=net;
+    yh+=`<tr><td>${monthStr}</td><td>${cash(inc)}</td><td>${cash(exp)}</td><td>${net<0?'လိုငွေ ':'ကျန်ငွေ '}${cash(Math.abs(net))}</td></tr>`;
+  }
+  yh+=`<tr><th>တစ်နှစ်စုစုပေါင်း</th><th>${cash(db.transactions.filter(t=>(t.date||'').startsWith(y)&&t.type==='income').reduce((n,t)=>n+Number(t.amount||0),0))}</th><th>${cash(db.transactions.filter(t=>(t.date||'').startsWith(y)&&t.type==='expense').reduce((n,t)=>n+Number(t.amount||0),0))}</th><th>${bal<0?'လိုငွေ ':'ကျန်ငွေ '}${cash(Math.abs(bal))}</th></tr></tbody></table></div>`;
+  $("yearSummary").innerHTML=yh;
 }
-function savePayment(){
- const student=db.students.find(s=>s.id===$('pStudent').value);
- const amount=Number($('pAmount').value);
- if(!student){alert('အရင်ဆုံး ကျောင်းသားထည့်ပါ။');return;}
- if(!amount||amount<0){alert('ငွေပမာဏ မှန်ကန်စွာထည့်ပါ။');return;}
- db.payments.push({id:String(Date.now()),studentId:student.id,month:$('pMonth').value||monthNow(),
- date:$('pDate').value||today(),amount,method:$('pMethod').value,note:$('pNote').value.trim()});
- $('pAmount').value='';$('pNote').value='';persist();
+$("reportBtn").onclick=report;
+function renderArrearsReport(){
+  const m=$("arrearsMonth").value||monthNow();
+  const rank=g=>grades.indexOf(g)<0?999:grades.indexOf(g);
+  const ss=db.students.filter(s=>s.status==="active").sort((a,b)=>rank(a.grade)-rank(b.grade)||String(a.name||"").localeCompare(String(b.name||"")));
+  let rows=[],dueTotal=0,paidTotal=0,balanceTotal=0;
+  ss.forEach(s=>{
+    const due=Number(s.fee??db.fees[s.grade]??0);
+    const got=db.transactions.filter(t=>t.type==="income"&&t.studentId===s.id&&(t.billingMonth===m||(!t.billingMonth&&String(t.note||"").includes(m)))).reduce((n,t)=>n+Number(t.amount||0),0);
+    const paid=Math.min(due,got),balance=Math.max(0,due-got);
+    dueTotal+=due;paidTotal+=paid;balanceTotal+=balance;
+    if(balance>0)rows.push({s,due,paid,balance});
+  });
+  let h=`<div class="notice"><b>${esc(m)} အကြွေးကျန်အကျဉ်း</b><br>သတ်မှတ်ငွေ: ${cash(dueTotal)}<br>ပေးပြီးငွေ: ${cash(paidTotal)}<br>အကြွေးကျန်စုစုပေါင်း: ${cash(balanceTotal)}<br>အကြွေးကျန်ကျောင်းသား: ${rows.length} ဦး</div>`;
+  if(!rows.length)h+="<p>အကြွေးကျန်မရှိပါ။</p>";
+  else{
+    h+='<div class="tablewrap"><table><thead><tr><th>စဉ်</th><th>အတန်း</th><th>အမည်</th><th>ကျောင်းဝင်နံပါတ်</th><th>သတ်မှတ်ငွေ</th><th>ပေးငွေ</th><th>ကျန်ငွေ</th></tr></thead><tbody>';
+    rows.forEach((r,i)=>h+=`<tr><td>${i+1}</td><td>${esc(r.s.grade)}</td><td>${esc(r.s.name)}</td><td>${esc(r.s.code)}</td><td>${cash(r.due)}</td><td>${cash(r.paid)}</td><td>${cash(r.balance)}</td></tr>`);
+    h+=`<tr><th colspan="4">စုစုပေါင်း</th><th>${cash(dueTotal)}</th><th>${cash(paidTotal)}</th><th>${cash(balanceTotal)}</th></tr></tbody></table></div>`;
+  }
+  $("arrearsReport").innerHTML=h;
 }
-function deletePayment(id){
- if(confirm('ဤငွေလက်ခံမှတ်တမ်းကို ဖျက်မလား?')){db.payments=db.payments.filter(x=>x.id!==id);persist();}
+$("arrearsBtn").onclick=renderArrearsReport;
+$("printArrearsBtn").onclick=()=>{renderArrearsReport();window.print()};
+
+function calendarList(){
+  let a=[...db.events].sort((x,y)=>x.date.localeCompare(y.date));
+  $("cl").innerHTML=a.length?a.map(x=>`<div class="item"><strong>${esc(x.title)}</strong><div>${esc(x.date)} · ${esc(x.kind)}</div><div>${esc(x.note)}</div><div class="actions"><button class="secondary" onclick="editEvent('${x.id}')">ပြင်မည်</button><button class="danger" onclick="delEvent('${x.id}')">ဖျက်မည်</button></div></div>`).join(""):"<p class='muted'>အစီအစဉ် မရှိသေးပါ။</p>";
 }
-function renderPayments(){
- $('paymentRows').innerHTML=[...db.payments].reverse().map(p=>{
- const s=db.students.find(x=>x.id===p.studentId);
- return `<tr><td>${safe(p.date)}</td><td>${safe(s?.name||'ဖျက်ထားသောကျောင်းသား')}</td><td>${safe(p.month)}</td><td>${money(p.amount)}</td><td><button class="danger" onclick="deletePayment('${p.id}')">ဖျက်</button></td></tr>`;
- }).join('')||'<tr><td colspan="5">မှတ်တမ်းမရှိသေးပါ။</td></tr>';
+$("cf").onsubmit=e=>{
+  e.preventDefault();let id=$("cid").value,x={id:id||uid(),title:$("ct").value.trim(),date:$("cd").value,kind:$("ck").value,note:$("cn").value.trim()};
+  if(id)db.events=db.events.map(y=>y.id===id?x:y);else db.events.push(x);
+  save();$("cf").reset();$("cid").value="";render();
+};
+window.editEvent=id=>{let x=db.events.find(y=>y.id===id);if(!x)return;$("cid").value=x.id;$("ct").value=x.title;$("cd").value=x.date;$("ck").value=x.kind;$("cn").value=x.note;showPage("calendar")};
+window.delEvent=id=>{if(confirm("အစီအစဉ်ဖျက်မလား?")){db.events=db.events.filter(x=>x.id!==id);save();render()}};
+
+const subjectMap=g=>{
+  const n=Number(String(g||'').replace('Grade-',''));
+  if(g==='KG'||(n>=1&&n<=5))return ['မြန်မာ','English','သင်္ချာ','လူမှုရေး','သိပ္ပံ'];
+  if(n>=6&&n<=9)return ['မြန်မာ','English','သင်္ချာ','ပထဝီဝင်','သမိုင်း','သိပ္ပံ'];
+  return ['မြန်မာ','English','သင်္ချာ','ဓာတုဗေဒ','ရူပဗေဒ','ဇီဝဗေဒ'];
+};
+
+function fillExamFields(){
+  const g=$("examGrade").value;
+  const arr=db.students.filter(s=>s.grade===g);
+  $("es").innerHTML='<option value="">ကျောင်းသားရွေးပါ</option>'+arr.map(s=>`<option value="${s.id}">${esc(s.name)} (${esc(s.code)})</option>`).join("");
+  $("eb").innerHTML=subjectMap(g).map(s=>`<option>${s}</option>`).join("");
 }
-function saveExpense(){
- const amount=Number($('eAmount').value);
- if(!amount||amount<0){alert('ငွေပမာဏထည့်ပါ။');return;}
- db.expenses.push({id:String(Date.now()),date:$('eDate').value||today(),
- category:$('eCategory').value,amount,note:$('eNote').value.trim()});
- $('eAmount').value='';$('eNote').value='';persist();
+$("examGrade").onchange=()=>{fillExamFields();examList()};
+
+$("ef").onsubmit=e=>{
+  e.preventDefault();
+  $("emax").value=$("examMax").value;
+  let mark=Number($("em").value),max=Number($("emax").value),sid=$("es").value;
+  if(!sid||mark<0||max<=0||mark>max){alert("ကျောင်းသားနှင့် အမှတ်များကို စစ်ဆေးပါ။");return}
+  let id=$("eid").value;
+  let x={id:id||uid(),studentId:sid,exam:$("en").value.trim(),subject:$("eb").value,mark,max,created:new Date().toISOString()};
+  if(id)db.exams=db.exams.map(y=>y.id===id?{...x,created:y.created}:y);
+  else{
+    db.exams=db.exams.filter(y=>!(y.studentId===sid&&y.exam===x.exam&&y.subject===x.subject));
+    db.exams.push(x);
+  }
+  save();$("ef").reset();$("eid").value="";fillExamFields();render();alert("အမှတ်စာရင်း သိမ်းပြီးပါပြီ။");
+};
+let selectedExam=examNames[0];
+  const byStudent=new Map();
+  classExams.filter(x=>x.exam===selectedExam).forEach(x=>{
+    const st=student(x.studentId);if(!st)return;
+    if(!byStudent.has(x.studentId))byStudent.set(x.studentId,{s:st,items:[]});
+    byStudent.get(x.studentId).items.push(x);
+  });
+
+  const rows=[...byStudent.values()].sort((a,b)=>String(a.s.code||'').localeCompare(String(b.s.code||''),undefined,{numeric:true,sensitivity:'base'}));
+  h+=`<div class="tablewrap"><table><thead><tr><th>စဉ်</th><th>အမည်</th><th>ကျောင်းဝင်နံပါတ်</th>${subjects.map(x=>`<th>${esc(x)}</th>`).join('')}<th>စုစုပေါင်း</th><th>%</th><th>အောင်/ရှုံး</th></tr></thead><tbody>`;
+  rows.forEach((r,i)=>{
+    const total=r.items.reduce((n,x)=>n+Number(x.mark||0),0), maxTotal=r.items.reduce((n,x)=>n+Number(x.max||0),0);
+    const all=subjects.every(sub=>{const x=r.items.find(y=>y.subject===sub);return !!x&&Number(x.max)>0&&Number(x.mark)/Number(x.max)*100>=Number($("pass").value||40)});
+    h+=`<tr><td>${i+1}</td><td>${esc(r.s.name)}</td><td>${esc(r.s.code)}</td>${subjects.map(sub=>{const x=r.items.find(y=>y.subject===sub);return `<td>${x?Number(x.mark)+'/'+Number(x.max):'—'}</td>`}).join('')}<td>${total}/${maxTotal}</td><td>${maxTotal?(total/maxTotal*100).toFixed(1):'0.0'}%</td><td><b>${all?'အောင်':'ရှုံး'}</b></td></tr>`;
+  });
+  h+='</tbody></table></div>';
+  $("examClassTable").innerHTML=h;
 }
-function deleteExpense(id){
- if(confirm('အသုံးစရိတ်မှတ်တမ်းကို ဖျက်မလား?')){db.expenses=db.expenses.filter(x=>x.id!==id);persist();}
+$("pass").oninput=examList;
+
+window.staffList=function(){
+  const m=monthNow();
+  const panel=$("payrollPanel");
+  panel.innerHTML=`
+    <h3>လစာစာရင်းသွင်းခြင်း</h3>
+    <label>ဆရာ/မအမည်ကို ရွေးချယ်ပါ</label>
+    <select id="payrollStaffSelect"><option value="">ဆရာ/မ ရွေးပါ</option>${db.staff.map(s=>`<option value="${s.id}">${esc(s.name)} — ${esc(s.code)}</option>`).join('')}</select>
+    <div id="payrollStaffDetails" class="notice">ဆရာ/မကို ရွေးချယ်ပါ။</div>
+    <div id="payrollSalaryFields" class="grid two" style="margin-top:10px"></div>
+    <div class="actions">
+      <button type="button" class="secondary" id="saveSalarySettings">လစာအချက်အလက် သိမ်းမည်</button>
+      <button type="button" class="primary" id="recordSalaryPayment">လစာပေးချေပြီး မှတ်တမ်းတင်မည်</button>
+    </div>
+    <h3 style="margin-top:16px">ပေးချေပြီးသော လစာစာရင်း (${m})</h3>
+    <div id="paidPayrollTable"></div>
+  `;
+
+  const sel=$("payrollStaffSelect");
+  sel.onchange=()=>{
+    const s=db.staff.find(x=>x.id===sel.value);
+    if(!s){$("payrollStaffDetails").textContent="ဆရာ/မကို ရွေးချယ်ပါ။";$("payrollSalaryFields").innerHTML="";return;}
+    $("payrollStaffDetails").innerHTML=`<b>${esc(s.name)}</b> | ID: ${esc(s.code)} | ရာထူး: ${esc(s.role)}`;
+    $("payrollSalaryFields").innerHTML=`
+      <div><label>အခြေခံလစာ (ကျပ်)</label><input id="payBase" type="number" min="0" value="${s.base||0}"></div>
+      <div><label>ဆုကြေးငွေ (ကျပ်)</label><input id="payBonus" type="number" min="0" value="${s.bonus||0}"></div>
+      <div><label>ဖြတ်တောက်ငွေ (ကျပ်)</label><input id="payDed" type="number" min="0" value="${s.ded||0}"></div>
+      <div><label>အသားတင်လစာ</label><div class="notice" id="payNet" style="margin-top:4px">${cash(Number(s.base||0)+Number(s.bonus||0)-Number(s.ded||0))}</div></div>
+    `;
+    ['payBase','payBonus','payDed'].forEach(id=>$(id).oninput=()=>{
+      $("payNet").textContent=cash(Number($("payBase").value||0)+Number($("payBonus").value||0)-Number($("payDed").value||0));
+    });
+  };
+
+  $("saveSalarySettings").onclick=()=>{
+    const s=db.staff.find(x=>x.id===sel.value);if(!s){alert("ဆရာ/မကို အရင်ရွေးပါ။");return}
+    s.base=Number($("payBase").value);s.bonus=Number($("payBonus").value||0);s.ded=Number($("payDed").value||0);
+    save();alert("လစာအချက်အလက် သိမ်းပြီးပါပြီ။");
+  };
+
+  $("recordSalaryPayment").onclick=()=>{
+    const s=db.staff.find(x=>x.id===sel.value);if(!s){alert("ဆရာ/မကို အရင်ရွေးပါ။");return}
+    if(db.payroll.some(p=>p.staffId===s.id&&p.month===m)){alert("ဤဆရာ/မအတွက် ဒီလ လစာပေးချေပြီးဖြစ်သည်။");return}
+    const amt=Number($("payBase").value)+Number($("payBonus").value||0)-Number($("payDed").value||0);
+    if(!confirm(`${s.name} အတွက် ${m} လစာ ${cash(amt)} ပေးချေပြီး မှတ်တမ်းတင်မလား?`))return;
+    s.base=Number($("payBase").value);s.bonus=Number($("payBonus").value||0);s.ded=Number($("payDed").value||0);
+    db.payroll.push({id:uid(),staffId:s.id,month:m,amount:amt,date:dateNow()});
+    db.transactions.push({id:uid(),type:"expense",studentId:"",amount:amt,date:dateNow(),method:"ငွေသား",category:"ဆရာ/ဝန်ထမ်းလစာ",note:`${m} လစာ - ${s.name}`});
+    save();render();alert("လစာပေးချေမှု မှတ်တမ်းတင်ပြီးပါပြီ။");
+  };
+
+  const paid=db.payroll.filter(p=>p.month===m);
+  $("paidPayrollTable").innerHTML=paid.length?`<div class="tablewrap"><table><thead><tr><th>စဉ်</th><th>ဆရာ/မအမည်</th><th>ရက်စွဲ</th><th>ပေးချေငွေ</th></tr></thead><tbody>${paid.map((p,i)=>{const s=db.staff.find(x=>x.id===p.staffId);return `<tr><td>${i+1}</td><td>${esc(s?.name||'—')}</td><td>${esc(p.date)}</td><td>${cash(p.amount)}</td></tr>`}).join('')}</tbody></table></div>`:'<p class="muted">ဒီလအတွက် လစာပေးချေမှု မရှိသေးပါ။</p>';
+};
+
+$("saveTeacherEnrollment").onclick=()=>{
+  const name=$("teName").value.trim(),code=$("teCode").value.trim();
+  if(!name||!code){alert("ဆရာ/မအမည်နှင့် ဝန်ထမ်း ID ဖြည့်ပါ။");return}
+  if(db.staff.some(s=>s.code.toLowerCase()===code.toLowerCase())){alert("ဝန်ထမ်း ID ထပ်နေပါသည်။");return}
+  db.staff.push({id:uid(),name,code,role:$("teRole").value,phone:$("tePhone").value.trim(),dob:$("teDob").value,education:$("teEducation").value.trim(),classAssigned:$("teClass").value,base:0,bonus:0,ded:0});
+  save();renderTeacherList();render();alert("ဆရာ/မစာရင်း သိမ်းပြီးပါပြီ။");
+};
+
+function renderTeacherList(){
+  const node=$("teacherEnrollmentList");if(!node)return;
+  node.innerHTML=db.staff.length?`<div class="tablewrap"><table><thead><tr><th>စဉ်</th><th>အမည်</th><th>ID</th><th>ရာထူး</th><th>ဖုန်း</th><th>အတန်းပိုင်</th><th>လုပ်ဆောင်ချက်</th></tr></thead><tbody>${db.staff.map((t,i)=>`<tr><td>${i+1}</td><td>${esc(t.name)}</td><td>${esc(t.code)}</td><td>${esc(t.role)}</td><td>${esc(t.phone)}</td><td>${esc(t.classAssigned||'—')}</td><td><button class="danger" onclick="delStaff('${t.id}')">ဖျက်မည်</button></td></tr>`).join('')}</tbody></table></div>`:'<p class="muted">ဆရာ/မစာရင်း မရှိသေးပါ။</p>';
 }
-function renderExpenses(){
- $('expenseRows').innerHTML=[...db.expenses].reverse().map(e=>
- `<tr><td>${safe(e.date)}</td><td>${safe(e.category)}</td><td>${safe(e.note||'-')}</td><td>${money(e.amount)}</td><td><button class="danger" onclick="deleteExpense('${e.id}')">ဖျက်</button></td></tr>`
- ).join('')||'<tr><td colspan="5">မှတ်တမ်းမရှိသေးပါ။</td></tr>';
-}
-function renderReport(){
- const m=$('reportMonth').value||monthNow();
- const paid=db.payments.filter(p=>p.month===m).reduce((a,p)=>a+p.amount,0);
- const expense=db.expenses.filter(e=>e.date.startsWith(m)).reduce((a,e)=>a+e.amount,0);
- $('rPaid').textContent=money(paid);$('rExpense').textContent=money(expense);$('rNet').textContent=money(paid-expense);
- $('reportRows').innerHTML=db.students.map(s=>{
- const should=s.status==='active'?s.fee:0;
- const got=db.payments.filter(p=>p.studentId===s.id&&p.month===m).reduce((a,p)=>a+p.amount,0);
- return `<tr><td>${safe(s.name)}</td><td>${safe(s.grade)}</td><td>${money(should)}</td><td>${money(got)}</td><td>${money(Math.max(0,should-got))}</td></tr>`;
- }).join('')||'<tr><td colspan="5">ကျောင်းသားစာရင်းမရှိသေးပါ။</td></tr>';
-}
-function renderHome(){
- $('totalStudents').textContent=db.students.length;
- const paid=db.payments.reduce((a,p)=>a+p.amount,0);
- const spent=db.expenses.reduce((a,e)=>a+e.amount,0);
- $('totalPaid').textContent=money(paid);$('totalSpent').textContent=money(spent);
- $('balance').textContent=money(paid-spent);$('homeMonth').textContent='ယခုလ: '+monthNow();
-}
-function renderAll(){
- renderHome();renderStudents();renderStudentOptions();renderPayments();renderExpenses();renderReport();
-}
+window.delStaff=id=>{if(confirm("ဆရာ/မကို ဖျက်မလား?")){db.staff=db.staff.filter(s=>s.id!==id);save();render();renderTeacherList()}};
+
+$("enrollType").onchange=function(){
+  const isT=this.value==="teacher";
+  $("studentFieldsForm").classList.toggle("hidden",isT);
+  $("studentFormActions").classList.toggle("hidden",isT);
+  $("teacherEnrollment").classList.toggle("hidden",!isT);
+  $("studentListArea").classList.toggle("hidden",isT);
+  $("teacherListArea").classList.toggle("hidden",!isT);
+  if(isT)renderTeacherList();
+};
+
 function backup(){
- const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});
- const url=URL.createObjectURL(blob);const a=document.createElement('a');
- a.href=url;a.download='CFBS-Finance-Backup.json';a.click();URL.revokeObjectURL(url);
+  let blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"}),u=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=u;a.download="CFBS-Backup-"+dateNow()+".json";a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);
 }
-function restore(){
- const file=$('restoreFile').files[0];if(!file){alert('Backup JSON ဖိုင်ရွေးပါ။');return;}
- const reader=new FileReader();
- reader.onload=()=>{try{
- const d=JSON.parse(reader.result);
- if(!Array.isArray(d.students)||!Array.isArray(d.payments)||!Array.isArray(d.expenses))throw Error();
- if(!confirm('လက်ရှိစာရင်းကို Backup ဖိုင်ဖြင့် အစားထိုးမလား?'))return;
- db=d;persist();alert('Backup ပြန်သွင်းပြီးပါပြီ။');
- }catch(e){alert('Backup ဖိုင်မမှန်ပါ။');}};
- reader.readAsText(file);
+$("backupBtn").onclick=backup;
+$("restoreBtn").onclick=()=>$("rf").click();
+
+$("rf").onchange=async e=>{
+  let f=e.target.files[0];if(!f)return;
+  try{
+    let x=JSON.parse(await f.text());
+    if(!confirm("လက်ရှိဒေတာကို Backup ဖိုင်ဖြင့် အစားထိုးမည်။ ဆက်လုပ်မလား?"))return;
+    db=x;save();render();alert("Backup ပြန်ထည့်ပြီးပါပြီ။");
+  }catch(err){alert("Backup ဖိုင် မမှန်ကန်ပါ။")}
+  finally{e.target.value=""}
+};
+
+function showPage(id){
+  document.querySelectorAll(".page").forEach(p=>p.classList.toggle("hidden",p.id!==id));
+  document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("active",b.dataset.p===id));
 }
-$('pDate').value=today();$('pMonth').value=monthNow();
-$('eDate').value=today();$('reportMonth').value=monthNow();
-if(sessionStorage.getItem('cfbs_logged_in')==='yes'){
- $('login').classList.add('hidden');$('app').classList.remove('hidden');renderAll();
+$("nav").onclick=e=>{let b=e.target.closest("[data-p]");if(b)showPage(b.dataset.p)};
+
+const AUTH_KEY="cfbs_admin_credentials_v1";
+function getCredentials(){
+  try{const c=JSON.parse(localStorage.getItem(AUTH_KEY)||"null");return c&&c.username&&c.password?c:null}catch(e){return null}
 }
+
+function showAuthScreen(){
+  const exists=!!getCredentials();
+  $("setupForm").classList.toggle("hidden",exists);
+  $("loginForm").classList.toggle("hidden",!exists);
+  $("authTitle").textContent=exists?"🔐 Admin Login":"🔐 Admin Setup";
+  $("authIntro").textContent=exists?"သင့်အကောင့်ဖြင့် Login ဝင်ပါ။":"ပထမဆုံးအသုံးပြုခြင်းဖြစ်ပါသည်။ ကိုယ်ပိုင် Username နှင့် Password ဖန်တီးပါ။";
+}
+
+$("setupForm").onsubmit=e=>{
+  e.preventDefault();
+  const u=$("newUsername").value.trim(),p=$("newPassword").value,p2=$("confirmPassword").value;
+  if(p!==p2){$("setupError").textContent="Password နှစ်ခု မတူပါ။";return}
+  localStorage.setItem(AUTH_KEY,JSON.stringify({username:u,password:p}));
+  showAuthScreen();
+};
+
+$("loginForm").onsubmit=e=>{
+  e.preventDefault();
+  const c=getCredentials(),u=$("loginUsername").value.trim(),p=$("loginPassword").value;
+  if(c&&u===c.username&&p===c.password){
+    document.body.classList.add("authenticated");
+  }else{$("loginError").textContent="Username သို့မဟုတ် Password မှားနေပါသည်။"}
+};
+
+showAuthScreen();
+fillExamFields();
+render();
 </script>
 </body>
-</html>
-
+</html
+function examList(){
+  const g=$("examGrade").value, subjects=subjectMap(g);
+  const classExams=db.exams.filter(x=>student(x.studentId)?.grade===g);
+  const examNames=[...new Set(classExams.map(x=>String(x.exam||'').trim()).filter(Boolean))];
+  
+  let h=`<h3>${esc(g)} အတန်းအလိုက် စာမေးပွဲရလဒ်</h3>`;
+  if(!examNames.length){
+    $("examClassTable").innerHTML=h+'<p class="muted">ဤအတန်းအတွက် စာမေးပွဲရလဒ် မရှိသေးပါ။</p>';
+    return;
+  }
