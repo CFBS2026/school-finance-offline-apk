@@ -1,179 +1,182 @@
--tools" "platforms;android-34" "build-tools;34.0.0"
+name: Build Offline School Finance APK
 
-  - name: Verify source HTML
-    run: |
-      test -s index.html
-      grep -q 'syncNow' index.html
-      echo "Source HTML and sync code found."
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
 
-  - name: Create Android project
-    run: |
-      mkdir -p app/src/main/assets
-      mkdir -p app/src/main/java/com/cfbs/finance
+permissions:
+  contents: read
 
-      cp index.html app/src/main/assets/index.html
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-      cat > settings.gradle <<'EOF'
-      pluginManagement {
-          repositories {
-              google()
-              mavenCentral()
-              gradlePluginPortal()
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK packages
+        run: |
+          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+
+      - name: Verify source HTML
+        run: |
+          test -s index.html
+          echo "HTML source found."
+          wc -c index.html
+
+      - name: Create Android project
+        run: |
+          mkdir -p app/src/main/assets
+          mkdir -p app/src/main/java/com/cfbs/finance
+
+          cp index.html app/src/main/assets/index.html
+
+          cat > settings.gradle <<'EOF'
+          pluginManagement {
+              repositories {
+                  google()
+                  mavenCentral()
+                  gradlePluginPortal()
+              }
           }
-      }
-      dependencyResolutionManagement {
-          repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-          repositories {
-              google()
-              mavenCentral()
+          dependencyResolutionManagement {
+              repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+              repositories {
+                  google()
+                  mavenCentral()
+              }
           }
-      }
-      rootProject.name = "CFBSOfflineFinance"
-      include(":app")
-      EOF
+          rootProject.name = "CFBSOfflineFinance"
+          include(":app")
+          EOF
 
-      cat > build.gradle <<'EOF'
-      plugins {
-          id 'com.android.application' version '8.5.2' apply false
-      }
-      EOF
-
-      cat > app/build.gradle <<'EOF'
-      plugins {
-          id 'com.android.application'
-      }
-
-      android {
-          namespace 'com.cfbs.finance'
-          compileSdk 34
-
-          defaultConfig {
-              applicationId 'com.cfbs.finance'
-              minSdk 23
-              targetSdk 28
-              versionCode 2
-              versionName '1.1'
+          cat > build.gradle <<'EOF'
+          plugins {
+              id 'com.android.application' version '8.5.2' apply false
           }
-      }
-      EOF
+          EOF
 
-      cat > app/src/main/AndroidManifest.xml <<'EOF'
-      <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+          cat > app/build.gradle <<'EOF'
+          plugins {
+              id 'com.android.application'
+          }
 
-          <uses-permission android:name="android.permission.INTERNET" />
-          <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+          android {
+              namespace 'com.cfbs.finance'
+              compileSdk 34
 
-          <application
-              android:theme="@android:style/Theme.Material.Light.NoActionBar"
-              android:label="CFBS School Finance"
-              android:usesCleartextTraffic="false"
-              android:hardwareAccelerated="true">
+              defaultConfig {
+                  applicationId 'com.cfbs.finance'
+                  minSdk 23
+                  targetSdk 28
+                  versionCode 3
+                  versionName '1.2'
+              }
+          }
+          EOF
 
-              <activity
-                  android:name=".MainActivity"
-                  android:exported="true"
-                  android:configChanges="orientation|screenSize|keyboardHidden">
+          cat > app/src/main/AndroidManifest.xml <<'EOF'
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-                  <intent-filter>
-                      <action android:name="android.intent.action.MAIN" />
-                      <category android:name="android.intent.category.LAUNCHER" />
-                  </intent-filter>
+              <uses-permission android:name="android.permission.INTERNET" />
+              <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-              </activity>
-          </application>
-      </manifest>
-      EOF
+              <application
+                  android:theme="@android:style/Theme.Material.Light.NoActionBar"
+                  android:label="CFBS School Finance"
+                  android:usesCleartextTraffic="true"
+                  android:hardwareAccelerated="true">
 
-      cat > app/src/main/java/com/cfbs/finance/MainActivity.java <<'EOF'
-      package com.cfbs.finance;
+                  <activity
+                      android:name=".MainActivity"
+                      android:exported="true"
+                      android:configChanges="orientation|screenSize|keyboardHidden">
 
-      import android.app.Activity;
-      import android.os.Bundle;
-      import android.webkit.WebView;
-      import android.webkit.WebSettings;
-      import android.webkit.WebViewClient;
-      import android.webkit.WebChromeClient;
-      import android.net.ConnectivityManager;
-      import android.net.Network;
-      import android.content.Context;
-      import android.os.Build;
+                      <intent-filter>
+                          <action android:name="android.intent.action.MAIN" />
+                          <category android:name="android.intent.category.LAUNCHER" />
+                      </intent-filter>
 
-      public class MainActivity extends Activity {
+                  </activity>
+              </application>
+          </manifest>
+          EOF
 
-          private WebView webView;
+          cat > app/src/main/java/com/cfbs/finance/MainActivity.java <<'EOF'
+          package com.cfbs.finance;
 
-          @Override
-          protected void onCreate(Bundle savedInstanceState) {
-              super.onCreate(savedInstanceState);
+          import android.app.Activity;
+          import android.os.Bundle;
+          import android.webkit.WebView;
+          import android.webkit.WebSettings;
+          import android.webkit.WebViewClient;
+          import android.webkit.WebChromeClient;
 
-              webView = new WebView(this);
+          public class MainActivity extends Activity {
+              private WebView webView;
 
-              WebSettings settings = webView.getSettings();
-              settings.setJavaScriptEnabled(true);
-              settings.setDomStorageEnabled(true);
-              settings.setDatabaseEnabled(true);
-              settings.setAllowFileAccess(true);
-              settings.setAllowContentAccess(true);
-              settings.setJavaScriptCanOpenWindowsAutomatically(false);
-              settings.setSupportMultipleWindows(false);
+              @Override
+              protected void onCreate(Bundle savedInstanceState) {
+                  super.onCreate(savedInstanceState);
 
-              webView.setWebViewClient(new WebViewClient());
-              webView.setWebChromeClient(new WebChromeClient());
+                  webView = new WebView(this);
 
-              setContentView(webView);
+                  WebSettings settings = webView.getSettings();
+                  settings.setJavaScriptEnabled(true);
+                  settings.setDomStorageEnabled(true);
+                  settings.setDatabaseEnabled(true);
+                  settings.setAllowFileAccess(true);
+                  settings.setAllowContentAccess(true);
+                  settings.setJavaScriptCanOpenWindowsAutomatically(false);
+                  settings.setSupportMultipleWindows(false);
 
-              if (savedInstanceState != null) {
-                  webView.restoreState(savedInstanceState);
-              } else {
+                  webView.setWebViewClient(new WebViewClient());
+                  webView.setWebChromeClient(new WebChromeClient());
+
+                  setContentView(webView);
                   webView.loadUrl("file:///android_asset/index.html");
               }
-          }
 
-          @Override
-          protected void onSaveInstanceState(Bundle outState) {
-              super.onSaveInstanceState(outState);
-              if (webView != null) {
-                  webView.saveState(outState);
+              @Override
+              protected void onDestroy() {
+                  if (webView != null) {
+                      webView.destroy();
+                      webView = null;
+                  }
+                  super.onDestroy();
               }
           }
+          EOF
 
-          @Override
-          public void onBackPressed() {
-              if (webView != null && webView.canGoBack()) {
-                  webView.goBack();
-              } else {
-                  super.onBackPressed();
-              }
-          }
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
+        with:
+          gradle-version: '8.7'
 
-          @Override
-          protected void onDestroy() {
-              if (webView != null) {
-                  webView.destroy();
-                  webView = null;
-              }
-              super.onDestroy();
-          }
-      }
-      EOF
+      - name: Build Debug APK
+        run: gradle --no-daemon assembleDebug
 
-  - name: Setup Gradle
-    uses: gradle/gradle-build-action@v3
-    with:
-      gradle-version: '8.7'
+      - name: Verify APK
+        run: |
+          test -s app/build/outputs/apk/debug/app-debug.apk
+          ls -lh app/build/outputs/apk/debug/app-debug.apk
 
-  - name: Build Debug APK
-    run: gradle --no-daemon assembleDebug
-
-  - name: Verify APK
-    run: |
-      test -s app/build/outputs/apk/debug/app-debug.apk
-      ls -lh app/build/outputs/apk/debug/app-debug.apk
-
-  - name: Upload APK
-    uses: actions/upload-artifact@v4
-    with:
-      name: CFBS-Offline-School-Finance-APK
-      path: app/build/outputs/apk/debug/app-debug.apk
-      if-no-files-found: error
-      retention-days: 14
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: CFBS-Offline-School-Finance-APK
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 14
