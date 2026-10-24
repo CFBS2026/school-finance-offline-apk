@@ -1,30 +1,4 @@
-name: Build Offline School Finance APK
-on:
-workflow_dispatch:
-push:
-branches:
-- main
-permissions:
-contents: read
-jobs:
-build:
-runs-on: ubuntu-latest
-steps:
-  - name: Checkout repository
-    uses: actions/checkout@v4
-
-  - name: Setup Java
-    uses: actions/setup-java@v4
-    with:
-      distribution: temurin
-      java-version: '17'
-
-  - name: Setup Android SDK
-    uses: android-actions/setup-android@v3
-
-  - name: Install Android SDK packages
-    run: |
-      sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+-tools" "platforms;android-34" "build-tools;34.0.0"
 
   - name: Verify source HTML
     run: |
