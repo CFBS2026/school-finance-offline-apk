@@ -1,51 +1,69 @@
-name: Build Offline School Finance APK
+name: Build CFBS Student Attendance APK
 
 on:
   workflow_dispatch:
   push:
-    branches:
-      - main
+    paths:
+      - 'index.html'
+      - '.github/workflows/build-attendance-apk.yml'
 
 permissions:
   contents: read
 
 jobs:
   build:
+    name: Build Attendance APK
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Attendance Repository
         uses: actions/checkout@v4
 
-      - name: Setup Java
+      - name: Verify Dashboard
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s index.html
+          grep -qi '<html' index.html
+          echo "Dashboard verified."
+
+      - name: Set up Java 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
-      
-      - name: Setup Android SDK
+      - name: Set up Android SDK
         uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK Packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          sdkmanager --install \
+            "platform-tools" \
+            "platforms;android-34" \
+            "build-tools;34.0.0"
+          yes | sdkmanager --licenses || true
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
         with:
-          packages: 'platform-tools platforms;android-34 build-tools;34.0.0'
-      - name: Install Android SDK packages
+          gradle-version: '8.2'
+          cache-disabled: true
+
+      - name: Generate Android Project
+        shell: bash
         run: |
-          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+          set -euo pipefail
 
-      - name: Verify source HTML
-        run: |
-          test -s index.html
-          echo "HTML source found."
-          wc -c index.html
+          mkdir -p android/app/src/main/assets
+          mkdir -p android/app/src/main/java/com/cfbs/attendance
 
-      - name: Create Android project
-        run: |
-          mkdir -p app/src/main/assets
-          mkdir -p app/src/main/java/com/cfbs/finance
+          cp index.html android/app/src/main/assets/index.html
 
-          cp index.html app/src/main/assets/index.html
-
-          cat > settings.gradle <<'EOF'
+          cat > android/settings.gradle <<'EOF'
           pluginManagement {
               repositories {
                   google()
@@ -53,6 +71,7 @@ jobs:
                   gradlePluginPortal()
               }
           }
+
           dependencyResolutionManagement {
               repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
               repositories {
@@ -60,51 +79,62 @@ jobs:
                   mavenCentral()
               }
           }
-          rootProject.name = "CFBSOfflineFinance"
-          include(":app")
+
+          rootProject.name = 'CFBS Student Attendance'
+          include ':app'
           EOF
 
-          cat > build.gradle <<'EOF'
+          cat > android/build.gradle <<'EOF'
           plugins {
-              id 'com.android.application' version '8.5.2' apply false
+              id 'com.android.application' version '8.2.2' apply false
           }
           EOF
 
-          cat > app/build.gradle <<'EOF'
+          cat > android/app/build.gradle <<'EOF'
           plugins {
               id 'com.android.application'
           }
 
           android {
-              namespace 'com.cfbs.finance'
+              namespace 'com.cfbs.attendance'
               compileSdk 34
 
               defaultConfig {
-                  applicationId 'com.cfbs.finance'
+                  applicationId 'com.cfbs.attendance'
                   minSdk 23
                   targetSdk 28
-                  versionCode 3
-                  versionName '1.2'
+                  versionCode 1
+                  versionName '1.0.0'
+              }
+
+              buildTypes {
+                  debug {
+                      minifyEnabled false
+                  }
+                  release {
+                      minifyEnabled false
+                  }
+              }
+
+              compileOptions {
+                  sourceCompatibility JavaVersion.VERSION_17
+                  targetCompatibility JavaVersion.VERSION_17
               }
           }
           EOF
 
-          cat > app/src/main/AndroidManifest.xml <<'EOF'
+          cat > android/app/src/main/AndroidManifest.xml <<'EOF'
           <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-
-              <uses-permission android:name="android.permission.INTERNET" />
-              <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
               <application
-                  android:theme="@android:style/Theme.Material.Light.NoActionBar"
-                  android:label="CFBS School Finance"
+                  android:allowBackup="true"
+                  android:label="CFBS Student Attendance"
+                  android:supportsRtl="true"
                   android:usesCleartextTraffic="true"
-                  android:hardwareAccelerated="true">
+                  android:theme="@android:style/Theme.Material.Light.NoActionBar">
 
                   <activity
                       android:name=".MainActivity"
-                      android:exported="true"
-                      android:configChanges="orientation|screenSize|keyboardHidden">
+                      android:exported="true">
 
                       <intent-filter>
                           <action android:name="android.intent.action.MAIN" />
@@ -116,15 +146,14 @@ jobs:
           </manifest>
           EOF
 
-          cat > app/src/main/java/com/cfbs/finance/MainActivity.java <<'EOF'
-          package com.cfbs.finance;
+          cat > android/app/src/main/java/com/cfbs/attendance/MainActivity.java <<'EOF'
+          package com.cfbs.attendance;
 
           import android.app.Activity;
           import android.os.Bundle;
-          import android.webkit.WebView;
           import android.webkit.WebSettings;
+          import android.webkit.WebView;
           import android.webkit.WebViewClient;
-          import android.webkit.WebChromeClient;
 
           public class MainActivity extends Activity {
               private WebView webView;
@@ -138,47 +167,48 @@ jobs:
                   WebSettings settings = webView.getSettings();
                   settings.setJavaScriptEnabled(true);
                   settings.setDomStorageEnabled(true);
-                  settings.setDatabaseEnabled(true);
                   settings.setAllowFileAccess(true);
                   settings.setAllowContentAccess(true);
-                  settings.setJavaScriptCanOpenWindowsAutomatically(false);
-                  settings.setSupportMultipleWindows(false);
 
                   webView.setWebViewClient(new WebViewClient());
-                  webView.setWebChromeClient(new WebChromeClient());
 
                   setContentView(webView);
                   webView.loadUrl("file:///android_asset/index.html");
               }
 
               @Override
-              protected void onDestroy() {
-                  if (webView != null) {
-                      webView.destroy();
-                      webView = null;
+              @SuppressWarnings("deprecation")
+              public void onBackPressed() {
+                  if (webView != null && webView.canGoBack()) {
+                      webView.goBack();
+                  } else {
+                      super.onBackPressed();
                   }
-                  super.onDestroy();
               }
           }
           EOF
 
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v3
-        with:
-          gradle-version: '8.7'
+          cd android
 
-      - name: Build Debug APK
-        run: gradle --no-daemon assembleDebug
+          gradle wrapper \
+            --gradle-version 8.2 \
+            --distribution-type bin
 
-      - name: Verify APK
+          chmod +x gradlew
+
+      - name: Build Attendance APK
+        working-directory: android
+        shell: bash
         run: |
+          set -euo pipefail
+          ./gradlew --no-daemon --stacktrace assembleDebug
           test -s app/build/outputs/apk/debug/app-debug.apk
-          ls -lh app/build/outputs/apk/debug/app-debug.apk
+          echo "APK build successful."
 
-      - name: Upload APK
+      - name: Upload Attendance APK
         uses: actions/upload-artifact@v4
         with:
-          name: CFBS-Offline-School-Finance-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: CFBS-Student-Attendance-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 14
